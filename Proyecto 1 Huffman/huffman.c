@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 #include <wchar.h>
 #include <locale.h>
@@ -20,52 +21,54 @@ int ipow(int base, int exp) {
 //########################################################
 
 typedef struct{
-    wchar_t c,
-    int codigo
-} Diccionario
+    wchar_t c;
+    int codigo;
+} Diccionario;
 
-typedef struct {
-    Diccionario* d,
-    unsigned int frecuencia,
-    Nodo* izq,
-    Nodo* der
-} Nodo
+typedef struct Nodo Nodo;
+
+struct Nodo {
+    Diccionario* d;
+    unsigned int frecuencia;
+    Nodo* izq;
+    Nodo* der;
+};
 
 //########################################################
 
-Nodo* arbol(int n, Nodo* nodosEmparejar){
+Nodo* arbol(int n, Nodo** nodosEmparejar){
 
-    for (int it = 0; it < n-1: ++it){
+    for (int it = 0; it < n-1; ++it){
 
         Nodo* min1 = NULL;
-        int m1 = INT_MAX;
+        unsigned int m1 = INT_MAX;
         int pos1 = -1;
         Nodo* min2 = NULL;
-        int m2 = INT_MAX;
+        unsigned int m2 = INT_MAX;
         int pos2 = -1;
         //pos final a buscar es (n - it)
-        finalPos = n - it
+        int finalPos = n - it;
         for (int i = 0; i < finalPos; ++i){
-            if (nodosEmparejar[i].d.frecuencia <= m1){
+            if (nodosEmparejar[i]->frecuencia <= m1){
                 min2 = min1;
                 m2 = m1;
                 pos2 = pos1;
 
                 min1 = nodosEmparejar[i];
-                m1 = nodosEmparejar[i].d.frecuencia;
+                m1 = nodosEmparejar[i]->frecuencia;
                 pos1 = i;
 
-            } else if (nodosEmparejar[i].d.frecuencia <= m2){
+            } else if (nodosEmparejar[i]->frecuencia <= m2){
                 min2 = nodosEmparejar[i];
-                m2 = nodosEmparejar[i].d.frecuencia;
+                m2 = nodosEmparejar[i]->frecuencia;
                 pos2 = i;
             }
         }
 
         Nodo* nodo = malloc(sizeof(Nodo));
-        nodo.izq = min1;
-        nodo.der = min2;
-        nodo.frecuencia = m1 + m2;
+        nodo->izq = min1;
+        nodo->der = min2;
+        nodo->frecuencia = m1 + m2;
 
         if (pos1 == finalPos){
             nodosEmparejar[pos2] = nodosEmparejar[finalPos-1];
@@ -88,19 +91,19 @@ Nodo* arbol(int n, Nodo* nodosEmparejar){
 
 void printArbol(Nodo* arbol){
 
-    wprintf(L"[%lc", c);
+    wprintf(L"[%lc", arbol->d->c);
 
     //izquierda
     printf("(");
-    if (arbol.izq != NULL){
-        printArbol(arbol.izq);
+    if (arbol->izq != NULL){
+        printArbol(arbol->izq);
     }
     printf(")");
 
     //derecha
     printf("(");
-    if (arbol.der != NULL){
-        printArbol(arbol.der);
+    if (arbol->der != NULL){
+        printArbol(arbol->der);
     }
     printf(")]");
 }
@@ -112,34 +115,38 @@ int main(){
     setlocale(LC_ALL, "");
 
     int n = 4; //tamaño alfabeto
-    Nodo* nodosEmparejar = malloc(sizeof(Nodo) * n);
+    Nodo** nodosEmparejar = malloc(sizeof(Nodo*) * n);
 
-    Diccionario* = malloc(sizeof(Diccionario) * n);
+
+    Diccionario* diccionario = malloc(sizeof(Diccionario) * n);
 
     for (int i = 0; i < n; ++i){
-        Nodo[i].der = NULL;
-        Nodo[i].izq = NULL;
+        nodosEmparejar[i] = malloc(sizeof(Nodo));
+        nodosEmparejar[i]->der = NULL;
+        nodosEmparejar[i]->izq = NULL;
     }
 
-    Diccionario[0].c = "A";
-    Diccionario[0].codigo = 0;
-    Nodo[0].frecuencia = 24;
-    Nodo[0].d = &Diccionario[0];
+    diccionario[0].c = L'a';
+    diccionario[0].codigo = 0;
+    nodosEmparejar[0]->frecuencia = 24;
+    nodosEmparejar[0]->d = &diccionario[0];
 
-    Diccionario[1].c = "B";
-    Diccionario[1].codigo = 0;
-    Nodo[1].frecuencia = 5;
-    Nodo[1].d = &Diccionario[1];
+    diccionario[1].c = L'b';
+    diccionario[1].codigo = 0;
+    nodosEmparejar[1]->frecuencia = 5;
+    nodosEmparejar[1]->d = &diccionario[1];
 
-    Diccionario[2].c = "C";
-    Diccionario[2].codigo = 0;
-    Nodo[2].frecuencia = 12;
-    Nodo[2].d = &Diccionario[2];
+    diccionario[2].c = L'c';
+    diccionario[2].codigo = 0;
+    nodosEmparejar[2]->frecuencia = 12;
+    nodosEmparejar[2]->d = &diccionario[2];
 
-    Diccionario[3].c = "D";
-    Diccionario[3].codigo = 0;
-    Nodo[3].frecuencia = 3;
-    Nodo[3].d = &Diccionario[3];
+    diccionario[3].c = L'd';
+    diccionario[3].codigo = 0;
+    nodosEmparejar[3]->frecuencia = 3;
+    nodosEmparejar[3]->d = &diccionario[3];
     
+    Nodo* a = arbol(n, nodosEmparejar);
 
+    printArbol(a);
 }

@@ -22,7 +22,8 @@ int ipow(int base, int exp) {
 
 typedef struct{
     wchar_t c;
-    int codigo;
+    char* codigo;
+    int len;
 } Diccionario;
 
 typedef struct Nodo Nodo;
@@ -91,7 +92,7 @@ void printArbol(Nodo* arbol){
     if (!arbol) return;
 
     if (arbol->d){
-        wprintf(L"[%lc", arbol->d->c);
+        wprintf(L"[%lc:(%ld)%.*hs", arbol->d->c, arbol->d->len, arbol->d->len, arbol->d->codigo);
     } else {
         wprintf(L"[-");
     }
@@ -110,6 +111,35 @@ void printArbol(Nodo* arbol){
     wprintf(L"]");
 }
 
+void asignarCodigos(Nodo* arbol, char* codigo, int len){
+
+    if (arbol->d != NULL){
+        char* cod = malloc(sizeof(char)*len);
+        memcpy(cod, codigo, (size_t)len);
+
+        arbol->d->codigo = cod;
+        arbol->d->len = len;
+        return;
+    }
+
+
+    if (arbol->izq != NULL){
+        char* nuevoCodigo = malloc(sizeof(char)*len + 1);
+        memcpy(nuevoCodigo, codigo, (size_t)len);
+        nuevoCodigo[len] = '0';
+        asignarCodigos(arbol->izq, nuevoCodigo, len+1);
+        free(nuevoCodigo);
+    }
+
+    if (arbol->der != NULL){
+        char* nuevoCodigo = malloc(sizeof(char)*len + 1);
+        memcpy(nuevoCodigo, codigo, (size_t)len);
+        nuevoCodigo[len] = '1';
+        asignarCodigos(arbol->der, nuevoCodigo, len+1);
+        free(nuevoCodigo);
+    }
+}
+
 //########################################################
 
 int main(){
@@ -121,6 +151,11 @@ int main(){
 
 
     Diccionario* diccionario = malloc(sizeof(Diccionario) * n);
+
+    for (int i = 0; i < n; ++i){
+        diccionario[i].codigo = NULL;
+        diccionario[i].len = 0;
+    }
 
     for (int i = 0; i < n; ++i){
         nodosEmparejar[i] = malloc(sizeof(Nodo));
@@ -150,6 +185,10 @@ int main(){
     
     Nodo* a = arbol(n, nodosEmparejar);
     wprintf(L"Holi, termine el arbol\n");
+
+    char* codigo = malloc(sizeof(char)*1);
+    asignarCodigos(a, codigo, 1);
+    wprintf(L"Holi, termine los codigos\n");
 
     printArbol(a);
     wprintf(L"\nHoli, termine de imprimir\n");

@@ -38,6 +38,7 @@ struct Nodo {
 
 Nodo* arbol(int n, Nodo** nodosEmparejar){
 
+    int size = n;
     for (int it = 0; it < n-1; ++it){
 
         Nodo* min1 = NULL;
@@ -47,8 +48,8 @@ Nodo* arbol(int n, Nodo** nodosEmparejar){
         unsigned int m2 = INT_MAX;
         int pos2 = -1;
         //pos final a buscar es (n - it)
-        int finalPos = n - it;
-        for (int i = 0; i < finalPos; ++i){
+        int last = size - 1;
+        for (int i = 0; i <= last; ++i){
             if (nodosEmparejar[i]->frecuencia <= m1){
                 min2 = min1;
                 m2 = m1;
@@ -69,20 +70,17 @@ Nodo* arbol(int n, Nodo** nodosEmparejar){
         nodo->izq = min1;
         nodo->der = min2;
         nodo->frecuencia = m1 + m2;
+        nodo->d = NULL;
 
-        if (pos1 == finalPos){
-            nodosEmparejar[pos2] = nodosEmparejar[finalPos-1];
-            nodosEmparejar[finalPos-1] = nodo;
-
-        } else if (pos2 == finalPos){
-            nodosEmparejar[pos1] = nodosEmparejar[finalPos-1];
-            nodosEmparejar[finalPos-1] = nodo;
-
-        } else {
-            nodosEmparejar[pos1] = nodosEmparejar[finalPos];   //ultimo en pos1
-            nodosEmparejar[pos2] = nodosEmparejar[finalPos-1]; //penultimo en pos2
-            nodosEmparejar[finalPos-1] = nodo;                 //inserta nodo en penultimo
+        if (pos1 > pos2){
+            int t = pos1;
+            pos1 = pos2;
+            pos2 = t;
         }
+
+        nodosEmparejar[pos1] = nodo;
+        nodosEmparejar[pos2] = nodosEmparejar[last];
+        size--;
 
     }
 
@@ -90,22 +88,26 @@ Nodo* arbol(int n, Nodo** nodosEmparejar){
 }
 
 void printArbol(Nodo* arbol){
+    if (!arbol) return;
 
-    wprintf(L"[%lc", arbol->d->c);
+    if (arbol->d){
+        wprintf(L"[%lc", arbol->d->c);
+    } else {
+        wprintf(L"[-");
+    }
 
-    //izquierda
-    printf("(");
-    if (arbol->izq != NULL){
+    if (arbol->izq){
+        wprintf(L"(");
         printArbol(arbol->izq);
+        wprintf(L")");
     }
-    printf(")");
-
-    //derecha
-    printf("(");
-    if (arbol->der != NULL){
+    if (arbol->der){
+        wprintf(L"(");
         printArbol(arbol->der);
+        wprintf(L")");
     }
-    printf(")]");
+
+    wprintf(L"]");
 }
 
 //########################################################
@@ -147,6 +149,12 @@ int main(){
     nodosEmparejar[3]->d = &diccionario[3];
     
     Nodo* a = arbol(n, nodosEmparejar);
+    wprintf(L"Holi, termine el arbol\n");
 
     printArbol(a);
+    wprintf(L"\nHoli, termine de imprimir\n");
 }
+
+
+
+//[-([-(])(])])]

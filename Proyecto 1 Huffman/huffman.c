@@ -198,7 +198,3 @@ int main(){
     printArbol(a);
     wprintf(L"\nHoli, termine de imprimir\n");
 }
-
-
-
-//[-([-(])(])])]

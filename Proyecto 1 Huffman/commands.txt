@@ -1,0 +1,8 @@
+
+
+Huffman
+make clean && make all && run-huffman
+
+Lector
+make clean && make all && make run-lector
+make clean && make all && make run-lector FILE=prueba2.txt

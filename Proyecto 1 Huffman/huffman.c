@@ -238,6 +238,19 @@ void comprimirArchivo(Diccionario* diccionario, int lenDir, char* path, char* te
                 }
             }
 
+            if (index == -1){
+                append_bits_msb(&buffer, &pos, 0, 8);
+
+                uint8_t byte;
+                while (pos >= 8){ //more than 8 bits
+
+                    byte = take_byte_msb(&buffer, &pos);
+                    fwrite(&byte, sizeof(uint8_t), 1, t);
+                    //pos -= 8; se hace en take byte
+                }
+                continue;
+            }
+
             unsigned int len = diccionario[index].len;
             char* codigo = diccionario[index].codigo;
 
@@ -255,10 +268,8 @@ void comprimirArchivo(Diccionario* diccionario, int lenDir, char* path, char* te
 
                 byte = take_byte_msb(&buffer, &pos);
                 fwrite(&byte, sizeof(uint8_t), 1, t);
-
                 //pos -= 8; se hace en take byte
             }
-
         }
     }
 
@@ -276,8 +287,45 @@ void comprimirArchivo(Diccionario* diccionario, int lenDir, char* path, char* te
 }
 
 
-void comprimir(Diccionario* diccionario, int lenDir, DIR* directorio) {
-    (void)directorio; // sin uso, mantenemos la firma original
+
+void comprimirSerial(Diccionario* diccionario, int lenDir){
+
+    DIR *dir = opendir("Libros");
+    if (!dir) {
+        perror("opendir");
+        return;
+    }
+
+    struct dirent *entry;
+    struct stat sb;
+    char path[1024];
+    char temp[1024];
+
+    while ((entry = readdir(dir)) != NULL) {
+        const char *name = entry->d_name;
+
+        // omitir especiales y temporales
+        if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) continue;
+        if (strncmp(name, "temp_", 5) == 0) continue;
+
+        // ruta al archivo real
+        snprintf(path, sizeof(path), "Libros/%s", name);
+        if (stat(path, &sb) == -1) {
+            fprintf(stderr, "stat(%s): %s\n", path, strerror(errno));
+            continue;
+        }
+        if (!S_ISREG(sb.st_mode)) continue; // solo archivos regulares
+
+        // ruta al archivo temporal
+        snprintf(temp, sizeof(temp), "Libros/temp_%s", name);
+
+        comprimirArchivo(diccionario, lenDir, path, temp);
+    }
+
+    closedir(dir);
+}
+
+void comprimirProcesos(Diccionario* diccionario, int lenDir) {
 
     DIR *dir = opendir("Libros");
     if (!dir) {
@@ -319,34 +367,14 @@ void comprimir(Diccionario* diccionario, int lenDir, DIR* directorio) {
             perror("fork");
             continue;
         }
-        if (pid == 0) {
-            // ===== Hijo =====
+        if (pid == 0) { // Hijo
             close(fd[0]); // cierra lectura del pipe
 
-            // Comprensión individual con tu función (¡intocable!)
             comprimirArchivo(diccionario, lenDir, path, temp);
 
-            // Renombrado atómico: sustituye original por el comprimido
-            if (rename(temp, path) == -1) {
-                char msg[512];
-                int n = snprintf(msg, sizeof(msg),
-                                 "Hijo %d ERROR renombrando %s -> %s: %s\n",
-                                 getpid(), temp, path, strerror(errno));
-                if (n > 0) write(fd[1], msg, (size_t)n);
-                close(fd[1]);
-                _exit(1);
-            } else {
-                char msg[512];
-                int n = snprintf(msg, sizeof(msg),
-                                 "Hijo %d OK: %s comprimido\n", getpid(), name);
-                if (n > 0) write(fd[1], msg, (size_t)n);
-                close(fd[1]);
-                _exit(0);
-            }
-        } else {
-            // ===== Padre =====
+            
+        } else { // Padre
             active++;
-            // Limitar nº de hijos simultáneos
             while (active >= MAX_CHILDREN) {
                 int status;
                 if (wait(&status) > 0) active--;
@@ -415,7 +443,8 @@ int main(){
 
     //comprimirArchivo(diccionario, dictLength, "prueba0.txt", "salida.bin");
 
-    comprimir(diccionario, dictLength, NULL);
+    //comprimirSerial(diccionario, dictLength);
+    comprimirProcesos(diccionario, dictLength);
 
     return 0;
 }

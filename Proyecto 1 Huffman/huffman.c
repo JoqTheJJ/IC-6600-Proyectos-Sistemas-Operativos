@@ -211,13 +211,13 @@ void asignarCodigos(Nodo* arbol, char* codigo, int len){
 
 void comprimirArchivo(Diccionario* diccionario, int lenDir, char* path, char* temp){
 
-    FILE* f = fopen(path, "r");
+    FILE* f = fopen(path, "rb");
     if (!f) { //Error
         perror("fopen");
         _exit(1);
     }
 
-    FILE* t = fopen(temp, "w");
+    FILE* t = fopen(temp, "wb");
     if (!t) { //Error
         perror("fopen");
         _exit(1);
@@ -244,7 +244,7 @@ void comprimirArchivo(Diccionario* diccionario, int lenDir, char* path, char* te
             uint64_t cod = 0;
             for (unsigned int index = 0; index < len; ++index){
                 if (codigo[index] == '1'){
-                    cod += ipow(2, index);
+                    cod += ipow(2, len-index-1);
                 }
             }
             append_bits_msb(&buffer, &pos, cod, len);
@@ -371,118 +371,11 @@ void comprimir(Diccionario* diccionario, int lenDir, DIR* directorio) {
     while (wait(&status) > 0) { /* notin */ }
 }
 
-int testOpenDir2() {
-    DIR *dir = opendir("Libros");
-    struct dirent *entry;
-    struct stat sb;
-    char path[1024];
-    char temp[1024];
-
-    if (!dir) {
-        perror("opendir");
-        return 1;
-    }
-
-    int fd[2];
-    if (pipe(fd) == -1) {
-        perror("pipe");
-        return 1;
-    }
-
-    while ((entry = readdir(dir)) != NULL) {
-        snprintf(path, sizeof(path), "Libros/%s", entry->d_name);
-        snprintf(temp, sizeof(temp), "Libros/temp_%s", entry->d_name);
-        if (stat(path, &sb) == -1) continue;
-
-        if (S_ISREG(sb.st_mode)) {
-            pid_t pid = fork();
-            if (pid == 0) {
-                // Hijo
-                close(fd[0]); // cierra lectura
-
-                FILE *f = fopen(path, "r");
-                if (!f) {
-                    perror("fopen");
-                    _exit(1);
-                }
-
-                char buffer[256];
-                if (fgets(buffer, sizeof(buffer), f)) {
-                    char msg[512];
-                    snprintf(msg, sizeof(msg), "Hijo %d: %s -> %s",
-                             getpid(), entry->d_name, buffer);
-                    write(fd[1], msg, strlen(msg));
-                }
-                fclose(f);
-
-                close(fd[1]); // cerrar escritura
-                _exit(0);
-            }
-            // Padre: sigue iterando
-        }
-    }
-
-    closedir(dir);
-    close(fd[1]); // padre cierra escritura
-
-    // Leer mensajes del pipe
-    char buf[512];
-    ssize_t n;
-    while ((n = read(fd[0], buf, sizeof(buf)-1)) > 0) {
-        buf[n] = '\0';
-        printf("Padre recibió: %s\n", buf);
-    }
-    close(fd[0]);
-
-    // Espera a los hijos
-    int status;
-    while (wait(&status) > 0);
-
-    return 0;
-}
-
-int testOpenDir() {
-    DIR *dir = opendir("Libros");
-    struct dirent *entry;
-    struct stat sb;
-    char path[1024];
-
-    if (!dir) {
-        perror("opendir");
-        return 1;
-    }
-
-    while ((entry = readdir(dir)) != NULL) {
-        snprintf(path, sizeof(path), "Libros/%s", entry->d_name);
-        if (stat(path, &sb) == -1) continue;
-
-        if (S_ISREG(sb.st_mode)) {
-            pid_t pid = fork();
-            if (pid == 0) {
-                // Hijo: procesa el archivo
-                printf("Hijo %d procesando %s\n", getpid(), entry->d_name);
-                // ... abrir archivo, crear temp, etc ...
-                _exit(0);  // importante: salir del hijo
-            }
-            // Padre: sigue con el loop, no hace nada aquí
-        }
-    }
-
-    closedir(dir);
-
-    // Padre espera a todos los hijos
-    int status;
-    pid_t wpid;
-    while ((wpid = wait(&status)) > 0) {
-        if (WIFEXITED(status)) {
-            //printf("Hijo %d terminó con %d\n", wpid, WEXITSTATUS(status));
-        }
-    }
-}
-
 //########################################################
 
 int main(){
+
+    setlocale(LC_ALL, "");
 
     //uint64_t* frequences = runFrequences();
 
@@ -495,15 +388,18 @@ int main(){
 
     diccionario[0].c = L'a';
     diccionario[0].codigo = malloc(sizeof(char) * 1);
+    diccionario[0].len = 1;
     diccionario[0].codigo[0] = '0';
 
     diccionario[1].c = L'b';
     diccionario[1].codigo = malloc(sizeof(char) * 2);
+    diccionario[1].len = 2;
     diccionario[1].codigo[0] = '1';
     diccionario[1].codigo[1] = '0';
 
     diccionario[2].c = L'c';
     diccionario[2].codigo = malloc(sizeof(char) * 3);
+    diccionario[2].len = 3;
     diccionario[2].codigo[0] = '1';
     diccionario[2].codigo[1] = '1';
     diccionario[2].codigo[2] = '0';
@@ -511,11 +407,13 @@ int main(){
 
     diccionario[3].c = L'd';
     diccionario[3].codigo = malloc(sizeof(char) * 3);
+    diccionario[3].len = 3;
     diccionario[3].codigo[0] = '1';
     diccionario[3].codigo[1] = '1';
     diccionario[3].codigo[2] = '1';
 
 
+    //comprimirArchivo(diccionario, dictLength, "prueba0.txt", "salida.bin");
 
     comprimir(diccionario, dictLength, NULL);
 

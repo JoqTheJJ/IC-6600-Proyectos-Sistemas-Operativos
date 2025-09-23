@@ -6,10 +6,15 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <limits.h>
+#include <glob.h>
+#include <linux/limits.h>
 
 #define UNICODE_SCALAR_MAX 0x110000u  // U+0000 .. U+10FFFF (1,114,112 entradas)
 
-int contar_archivo(const char *ruta, uint64_t *freq) {
+char rutas[100][PATH_MAX];
+
+int getFreqAux(const char *ruta, uint64_t *freq) {
     FILE *f = fopen(ruta, "r");
     if (!f) {
         fprintf(stderr, "No pude abrir %s: %s\n", ruta, strerror(errno));
@@ -35,17 +40,7 @@ int contar_archivo(const char *ruta, uint64_t *freq) {
     return 0;
 }
 
-uint64_t* runFrequences(int argc, char **argv) {
-    if (!setlocale(LC_ALL, "")) {
-        fprintf(stderr, "Advertencia: no se pudo establecer locale; asegúrate de usar UTF-8.\n");
-    }
-
-    if (argc < 2) {
-        fprintf(stderr, "Uso: %s archivo1.txt [archivo2.txt ...]\n", argv[0]);
-        return NULL;
-    }
-
-    // Reserva en heap para no reventar la pila
+uint64_t* getFreq(char* book) {
     uint64_t *freq = calloc(UNICODE_SCALAR_MAX, sizeof(uint64_t));
 
     if (!freq) {
@@ -53,12 +48,10 @@ uint64_t* runFrequences(int argc, char **argv) {
         return NULL;
     }
 
-    int status = 0;
-    for (int i = 1; i < argc; i++) {
-        if (contar_archivo(argv[i], freq) != 0) status = 1;
-    }
+    if (getFreqAux(book, freq) == -1) return NULL;
 
-
+    // Imprime el array y el total (Solo para debug)
+    /*
     unsigned int contador = 0;
 
     for (unsigned cp = 0; cp < UNICODE_SCALAR_MAX; ++cp) {
@@ -75,34 +68,88 @@ uint64_t* runFrequences(int argc, char **argv) {
     }
 
     wprintf(L"\nHola, hay %d cantidad de digitos distintos\n", contador);
+    */
 
     return freq;
 }
 
-/*
-int main(int argc, char **argv) {
+uint64_t* sumFreq(uint64_t* a, uint64_t* b) {
+    if (!a || !b) return NULL;
+    for (unsigned c = 0; c < UNICODE_SCALAR_MAX; ++c) {
+        a[c] += b[c];
+    }
+    free(b);
+    return a;
+}
+
+void setBooks(char* pattern) {
+    glob_t g = {0};
+
+    int rc = glob(pattern, 0, NULL, &g);
+    // Bloque de errores
+    if (rc != 0) {
+        if (rc == GLOB_NOMATCH) {
+            fprintf(stderr, "No se encontraron archivos que coincidan con %s\n", pattern);
+        } else if (rc == GLOB_NOSPACE) {
+            fprintf(stderr, "Memoria insuficiente durante glob()\n");
+        } else {
+            fprintf(stderr, "Error de glob() (código %d)\n", rc);
+        }
+        return;
+    }
+
+    if (g.gl_pathc < 100) {
+        fprintf(stderr, "Advertencia: se esperaban 100 .txt, se encontraron %zu\n", g.gl_pathc);
+    }
+
+    size_t n = g.gl_pathc < 100 ? g.gl_pathc : 100;
+
+    for (size_t i = 0; i < n; ++i) {
+        // Copia segura con terminación
+        strncpy(rutas[i], g.gl_pathv[i], PATH_MAX - 1);
+        rutas[i][PATH_MAX - 1] = '\0';
+    }
+
+    // Print dir (Solo para debug)
+    /*
+    for (size_t i = 0; i < n; ++i) {
+        puts(rutas[i]);         // p.ej., "Libros/DonQuijote.txt"
+    }
+    */
+
+    globfree(&g);
+    return;
+}
+
+
+
+uint64_t* getAllFreqSerial() {
+    uint64_t *totalFreq = calloc(UNICODE_SCALAR_MAX, sizeof(uint64_t)); //Padre
+    if (!totalFreq) return NULL;
+
+    for (int book = 0; book < 100; ++book) {
+        uint64_t *bookFreq = getFreq(rutas[book]);
+        sumFreq(totalFreq, bookFreq);
+    }
+
+    return totalFreq;
+}
+
+
+
+
+
+
+int main() {
     if (!setlocale(LC_ALL, "")) {
         fprintf(stderr, "Advertencia: no se pudo establecer locale; asegúrate de usar UTF-8.\n");
     }
 
-    if (argc < 2) {
-        fprintf(stderr, "Uso: %s archivo1.txt [archivo2.txt ...]\n", argv[0]);
-        return 1;
-    }
+    setBooks("Libros/*.txt");
 
-    // Reserva en heap para no reventar la pila
-    uint64_t *freq = calloc(UNICODE_SCALAR_MAX, sizeof(uint64_t));
+    uint64_t* freq = getAllFreqSerial();
 
-    if (!freq) {
-        fprintf(stderr, "Sin memoria para tabla de frecuencias.\n");
-        return 1;
-    }
-
-    int status = 0;
-    for (int i = 1; i < argc; i++) {
-        if (contar_archivo(argv[i], freq) != 0) status = 1;
-    }
-
+    if(!freq) return -1;
 
     unsigned int contador = 0;
 
@@ -121,7 +168,5 @@ int main(int argc, char **argv) {
 
     wprintf(L"\nHola, hay %d cantidad de digitos distintos\n", contador);
 
-    free(freq);
-    return status;
+    return 0;
 }
-*/

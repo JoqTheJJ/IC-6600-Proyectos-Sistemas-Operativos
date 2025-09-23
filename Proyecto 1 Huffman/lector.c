@@ -151,22 +151,5 @@ int main() {
 
     if(!freq) return -1;
 
-    unsigned int contador = 0;
-
-    for (unsigned cp = 0; cp < UNICODE_SCALAR_MAX; ++cp) {
-        if (cp >= 0xD800 && cp <= 0xDFFF) continue;   // omite surrogates
-        if (freq[cp] == 0) continue;                  // imprime solo los presentes
-
-        contador++;
-        // Imprime: "Letra: x | Freq: N"
-        if (cp == L'\n')
-            wprintf(L"Letra: \\n | Freq: %llu\n", (unsigned long long)freq[cp]);
-        else
-            wprintf(L"Letra: %lc | Freq: %llu\n", (wint_t)cp, (unsigned long long)freq[cp]);
-
-    }
-
-    wprintf(L"\nHola, hay %d cantidad de digitos distintos\n", contador);
-
     return 0;
 }

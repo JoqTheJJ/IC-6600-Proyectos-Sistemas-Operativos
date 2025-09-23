@@ -12,7 +12,7 @@ int limitIndex = 0;
 struct {
     wchar_t c;
     unsigned int len;
-    
+    unsigned long long code;
 } Dictionary;
 
 void main(){

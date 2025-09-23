@@ -14,3 +14,7 @@ struct {
     unsigned int len;
     
 } Dictionary;
+
+void main(){
+    //do notin
+}

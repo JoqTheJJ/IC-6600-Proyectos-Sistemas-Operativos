@@ -221,8 +221,16 @@ static inline void append_uint_bits_msb_stream(uint64_t *w, unsigned *pos,
     }
 }
 
+_Static_assert(sizeof(wchar_t) * CHAR_BIT <= 64, "wchar_t demasiado grande");
+
+static inline void append_uint_bits_msb_stream(uint64_t *w, unsigned *pos,
+                                               uint64_t val, unsigned bits,
+                                               FILE *t);
 
 
+
+
+                                               
 //########################################################
 
 typedef struct{
@@ -558,6 +566,49 @@ void comprimirProcesos(Diccionario* diccionario, int lenDir) {
 //########################################################
 //########################################################
 
+static void guardarArbol_preorden_char_o_cero(const Nodo *n,
+                                              uint64_t *w, unsigned *pos, FILE *out)
+{
+    if (!n) return;
+
+    const unsigned BITS_WC = (unsigned)(sizeof(wchar_t) * CHAR_BIT);
+
+    uint64_t v = 0;
+    if (n->d != NULL) {
+        // hoja: escribir el wchar_t completo
+        v = (uint64_t)( (unsigned)n->d->c );
+    } else {
+        // interno: escribir 0
+        v = 0;
+    }
+    append_uint_bits_msb_stream(w, pos, v, BITS_WC, out);
+
+    guardarArbol_preorden_char_o_cero(n->izq, w, pos, out);
+    guardarArbol_preorden_char_o_cero(n->der, w, pos, out);
+}
+
+int escribir_header_arbol_char0(const char *outfile, const Nodo *raiz)
+{
+    if (!outfile || !raiz) {
+        fprintf(stderr, "[header_arbol] parámetros inválidos\n");
+        return 1;
+    }
+    FILE *out = fopen(outfile, "wb");
+    if (!out) {
+        fprintf(stderr, "No pude crear '%s': %s\n", outfile, strerror(errno));
+        return 2;
+    }
+    uint64_t w = 0; unsigned pos = 0;
+
+    // PREORDEN: wchar_t completo en hojas, 0 en internos
+    guardarArbol_preorden_char_o_cero(raiz, &w, &pos, out);
+
+    // Alinear a byte para que luego puedas hacer append limpio
+    flush_pad_zeros(&w, &pos, out);
+    fclose(out);
+    return 0;
+}
+
 //########################################################
 //########################################################
 //########################################################
@@ -664,7 +715,7 @@ int fusionar_temporales_con_separador_bits_del(const char *dirpath,
 
     qsort(paths, n, sizeof(char*), cmp_strings);
 
-    FILE *out = fopen(outfile, "wb");
+    FILE *out = fopen(outfile, "ab");
     if (!out) {
         fprintf(stderr, "No pude crear '%s': %s\n", outfile, strerror(errno));
         for (size_t i=0;i<n;i++) free(paths[i]);
@@ -897,6 +948,14 @@ int testNuevo(){
     char *SEPSTR = malloc((size_t)L + 1);
     memcpy(SEPSTR, diccionario[separadorId].codigo, (size_t)L);
     SEPSTR[L] = '\0';
+
+
+
+    if (escribir_header_arbol_char0("Comprimido.bin", a) != 0) {
+        fprintf(stderr, "No se pudo escribir header del árbol\n");
+        return 1;
+    }
+
 
     //diccionario[dictLength].codigo es el codigo de separador
     int rc = fusionar_temporales_con_separador_bits_del("Libros",

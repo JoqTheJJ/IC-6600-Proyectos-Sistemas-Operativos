@@ -19,15 +19,18 @@
 #include <locale.h>
 
 #define UNICODE_SCALAR_MAX 0x110000u 
-
+#define DICT_MAX 3000 
 
 
 #include "lector.c"
 
 
 
+//########################################################
 
 
+
+//########################################################
 
 int ipow(int base, int exp) {
     int result = 1;
@@ -74,6 +77,33 @@ static inline uint8_t take_byte_msb(uint64_t *w, unsigned *pos) {
     *w <<= 8;
     *pos -= 8;
     return out;
+}
+
+static inline void flush_full_bytes(uint64_t *w, unsigned *pos, FILE *t) {
+    while (*pos >= 8) {
+        uint8_t b = take_byte_msb(w, pos);
+        fwrite(&b, 1, 1, t);
+    }
+}
+
+static inline void append_code_from_str_msb(uint64_t *w, unsigned *pos,
+                                            const char *code, unsigned len,
+                                            FILE *t) {
+    unsigned i = 0;
+    while (i < len) {
+        unsigned room = 64 - *pos;
+        unsigned chunk_len = len - i;
+        if (chunk_len > room) chunk_len = room;
+
+        uint64_t chunk = 0;
+        for (unsigned j = 0; j < chunk_len; ++j) {
+            chunk = (chunk << 1) | (code[i + j] == '1');
+        }
+
+        append_bits_msb(w, pos, chunk, chunk_len);
+        flush_full_bytes(w, pos, t);
+        i += chunk_len;
+    }
 }
 
 //########################################################
@@ -177,6 +207,30 @@ void printArbol(Nodo* arbol){
     wprintf(L"]");
 }
 
+void printArbolSizes(Nodo* arbol){
+    if (!arbol) return;
+
+
+    if (arbol->d){ //hoja
+
+        wprintf(L"%lc:(%ld)\n", arbol->d->c, arbol->d->len);
+
+        /*
+        for (int i = 0; i < arbol->d->len; i++){
+            wprintf(L"%c", arbol->d->codigo[i]);
+        }
+        */
+
+    }
+
+    if (arbol->izq){ //hijo izquierda
+        printArbolSizes(arbol->izq);
+    }
+    if (arbol->der){ //hijo derecho
+        printArbolSizes(arbol->der);
+    }
+}
+
 void asignarCodigos(Nodo* arbol, char* codigo, int len){
 
     if (arbol->d != NULL){
@@ -254,22 +308,7 @@ void comprimirArchivo(Diccionario* diccionario, int lenDir, char* path, char* te
             unsigned int len = diccionario[index].len;
             char* codigo = diccionario[index].codigo;
 
-            uint64_t cod = 0;
-            for (unsigned int index = 0; index < len; ++index){
-                if (codigo[index] == '1'){
-                    cod += ipow(2, len-index-1);
-                }
-            }
-            append_bits_msb(&buffer, &pos, cod, len);
-
-
-            uint8_t byte;
-            while (pos >= 8){ //more than 8 bits
-
-                byte = take_byte_msb(&buffer, &pos);
-                fwrite(&byte, sizeof(uint8_t), 1, t);
-                //pos -= 8; se hace en take byte
-            }
+            append_code_from_str_msb(&buffer, &pos, codigo, len, t);
         }
     }
 
@@ -401,7 +440,42 @@ void comprimirProcesos(Diccionario* diccionario, int lenDir) {
 
 //########################################################
 
-int main(){
+Diccionario* makeDictionary(uint64_t* frequences, Nodo** nodosEmparejar, int* len){
+
+    Diccionario* diccionario = malloc(sizeof(Diccionario) * DICT_MAX);
+    *len = 0;
+
+    for (unsigned cp = 0; cp < UNICODE_SCALAR_MAX; ++cp) {
+        if (cp >= 0xD800 && cp <= 0xDFFF) continue;   // omite surrogates
+        if (frequences[cp] == 0) continue;                  // imprime solo los presentes
+
+        int i = *len;
+
+        diccionario[i].c = (wchar_t) cp;
+        diccionario[i].len = 0;
+        diccionario[i].codigo = NULL;
+
+        nodosEmparejar[i] = malloc(sizeof(Nodo));
+        nodosEmparejar[i]->der = NULL;
+        nodosEmparejar[i]->izq = NULL;
+
+        nodosEmparejar[i]->d = &diccionario[i];
+
+        *len += 1;
+    }
+
+    free(frequences);
+    return diccionario;
+}
+
+
+
+
+
+
+//########################################################
+
+int testViejo(){
 
     setlocale(LC_ALL, "");
 
@@ -434,21 +508,88 @@ int main(){
     
 
     diccionario[3].c = L'd';
-    diccionario[3].codigo = malloc(sizeof(char) * 3);
-    diccionario[3].len = 3;
+    diccionario[3].codigo = calloc(78, sizeof(char));
+    diccionario[3].len = 2502;
     diccionario[3].codigo[0] = '1';
-    diccionario[3].codigo[1] = '1';
+    diccionario[3].codigo[1] = '0';
     diccionario[3].codigo[2] = '1';
+    diccionario[3].codigo[75] = '1';
+    diccionario[3].codigo[76] = '0';
+    diccionario[3].codigo[77] = '1';
 
 
-    //comprimirArchivo(diccionario, dictLength, "prueba0.txt", "salida.bin");
+    comprimirArchivo(diccionario, dictLength, "prueba0.txt", "salida.bin");
 
     //comprimirSerial(diccionario, dictLength);
-    comprimirProcesos(diccionario, dictLength);
+    //comprimirProcesos(diccionario, dictLength);
 
     return 0;
 }
 
+int testNuevo(){
+
+    setlocale(LC_ALL, "");
+
+    uint64_t* frequences = frequenceSerial();
+    Nodo** nodosEmparejar = malloc(sizeof(Nodo*) * DICT_MAX);
+
+    int dictLength = 0;
+    Diccionario* diccionario = makeDictionary(frequences, nodosEmparejar, &dictLength);
+
+    Nodo* a = arbol(dictLength, nodosEmparejar);
+    wprintf(L"Holi, termine el arbol\n");
+
+    char* codigo = malloc(sizeof(char)*1);
+    codigo[0] = 0;
+    asignarCodigos(a, codigo, 0);
+    wprintf(L"Holi, termine los codigos\n");
+
+    int max = -1;
+    for (int i = 0; i < dictLength; ++i){
+
+        if(diccionario[i].len > max){
+            max = diccionario[i].len;
+        }
+
+        /*
+        if (diccionario[i].len == 0){
+            wprintf(L"AAAAA\n", i);
+        } else if (diccionario[i].len >= 64) {
+            wprintf(L"oh shit\n", i);
+        }*/
+    }
+
+
+
+    //printArbolSizes(a);
+
+    wprintf(L"\nMax (oh shit) size: %d\n", max);
+    wprintf(L"\nHoli, termine de imprimir\n");
+
+    for (int i = 0; i < dictLength; ++i){
+        diccionario[i].len = 0;
+    }
+
+
+
+    //comprimirArchivo(diccionario, dictLength, "prueba0.txt", "salida.bin");
+
+    comprimirSerial(diccionario, dictLength);
+    //comprimirProcesos(diccionario, dictLength);
+
+    return 0;
+}
+
+
+
+
+
+
+int main(){
+
+    testViejo();
+    return 0;
+}
 
 void testTree(){
 

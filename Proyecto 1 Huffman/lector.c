@@ -138,8 +138,18 @@ uint64_t* getAllFreqSerial() {
 
 
 
+uint64_t* frequenceSerial() {
 
+    setBooks("Libros/*.txt");
 
+    uint64_t* freq = getAllFreqSerial();
+
+    if(!freq) return NULL;
+
+    return freq;
+}
+
+/*
 int main() {
     if (!setlocale(LC_ALL, "")) {
         fprintf(stderr, "Advertencia: no se pudo establecer locale; asegúrate de usar UTF-8.\n");
@@ -152,4 +162,4 @@ int main() {
     if(!freq) return -1;
 
     return 0;
-}
+}*/

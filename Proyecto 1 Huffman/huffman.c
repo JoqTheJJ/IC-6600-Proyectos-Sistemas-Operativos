@@ -553,7 +553,7 @@ int testNuevo(){
 
         /*
         if (diccionario[i].len == 0){
-            wprintf(L"AAAAA\n", i);
+            wprintf(L"AAAAAA\n", i);
         } else if (diccionario[i].len >= 64) {
             wprintf(L"oh shit\n", i);
         }*/
@@ -565,10 +565,6 @@ int testNuevo(){
 
     wprintf(L"\nMax (oh shit) size: %d\n", max);
     wprintf(L"\nHoli, termine de imprimir\n");
-
-    for (int i = 0; i < dictLength; ++i){
-        diccionario[i].len = 0;
-    }
 
 
 
@@ -587,7 +583,7 @@ int testNuevo(){
 
 int main(){
 
-    testViejo();
+    testNuevo();
     return 0;
 }
 

@@ -13,6 +13,9 @@ all: $(EXE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 
+
+
+
 run-huffman: huffman
 	./huffman
 

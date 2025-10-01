@@ -33,8 +33,7 @@
 #define SEPARADOR 0x110000u
 
 #include "lector.c"
-
-
+#include "descomprimir.c"
 
 //########################################################
 
@@ -904,7 +903,7 @@ int testNuevo(){
 
     nodosEmparejar[dictLength] = malloc(sizeof(Nodo));
     nodosEmparejar[dictLength]->d = &diccionario[dictLength];
-    nodosEmparejar[dictLength]->frecuencia = 100;
+    nodosEmparejar[dictLength]->frecuencia = 300;
     nodosEmparejar[dictLength]->izq = NULL;
     nodosEmparejar[dictLength]->der = NULL;
     dictLength++;
@@ -974,12 +973,49 @@ int testNuevo(){
 
 
 
+static int leer_opcion(void) {
+    for (;;) {
+        printf("\n=== Menú ===\n");
+        printf("  1) Comprimir .\\Libros\\ \n");
+        printf("  2) Descomprimir .\\comprimido.kirby \n");
+        printf("> ");
+        fflush(stdout);
 
+        char buf[64];
+        if (!fgets(buf, sizeof buf, stdin)) {
+            return -1; // EOF o error de lectura
+        }
+
+        char *end = NULL;
+        errno = 0;
+        long v = strtol(buf, &end, 10);
+        if (errno == 0 && end != buf && (v == 1 || v == 2)) {
+            return (int)v;
+        }
+        printf("Entrada inválida. Escribe 1 o 2.\n");
+    }
+}
 
 
 int main(){
+    int opcion = leer_opcion();
+    if (opcion == -1) {
+        fprintf(stderr, "No se pudo leer la entrada (EOF).\n");
+        return 1;
+    }
 
-    testNuevo();
+    switch (opcion) {
+        case 1:
+            printf("Elegiste la opción Comprimir Libros\n");
+            testNuevo();
+            break;
+
+        case 2:
+            printf("Elegiste la opción Descomprimir Libros\n");
+            descomprimir();
+            break;
+    }
+
     return 0;
 }
 

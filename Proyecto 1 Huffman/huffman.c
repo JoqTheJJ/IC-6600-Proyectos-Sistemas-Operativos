@@ -773,10 +773,7 @@ int fusionar_temporales_con_separador_bits_del(const char *dirpath,
         append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
         append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
         // Title
-        write_ascii_as_bits(&w, &pos, title, out);
-        // SEPARADOR
-        append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
-        append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
+        //write_ascii_as_bits(&w, &pos, title, out);
         // Data
         if (write_file_bytes_as_bits(&w, &pos, full, out) != 0) {
             fprintf(stderr, "Fallo procesando '%s'\n", full);

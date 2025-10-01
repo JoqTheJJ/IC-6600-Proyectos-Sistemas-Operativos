@@ -929,6 +929,34 @@ int testNuevo(){
     nodosEmparejar[dictLength]->der = NULL;
     dictLength++;
 
+    //Basura 0
+    diccionario[dictLength].c = (wchar_t) ' ';
+    diccionario[dictLength].codigo = NULL;
+    diccionario[dictLength].len = 0;
+
+    nodosEmparejar[dictLength] = malloc(sizeof(Nodo));
+    nodosEmparejar[dictLength]->d = &diccionario[dictLength];
+    nodosEmparejar[dictLength]->frecuencia = 1000000000;
+    nodosEmparejar[dictLength]->izq = NULL;
+    nodosEmparejar[dictLength]->der = NULL;
+    dictLength++;
+
+    //Basura 1
+    diccionario[dictLength].c = (wchar_t) ' ';
+    diccionario[dictLength].codigo = NULL;
+    diccionario[dictLength].len = 0;
+
+    nodosEmparejar[dictLength] = malloc(sizeof(Nodo));
+    nodosEmparejar[dictLength]->d = &diccionario[dictLength];
+    nodosEmparejar[dictLength]->frecuencia = 1000000000;
+    nodosEmparejar[dictLength]->izq = NULL;
+    nodosEmparejar[dictLength]->der = NULL;
+    dictLength++;
+
+
+
+
+    
 
     Nodo* a = arbol(dictLength, nodosEmparejar);
     wprintf(L"Holi, termine el arbol\n");

@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <limits.h>
 #include <assert.h>
+#include <time.h>
 
 //#define _XOPEN_SOURCE 700
 //#define _DEFAULT_SOURCE
@@ -18,6 +19,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <arpa/inet.h> 
 #include <fcntl.h>
 
 #include <wchar.h>
@@ -48,6 +50,11 @@ int ipow(int base, int exp) {
 }
 
 //########################################################
+
+static inline int write_u32_be(FILE *out, uint32_t v) {
+    uint32_t be = htonl(v);                  // convierte a big-endian (network order)
+    return (fwrite(&be, 1, sizeof be, out) == sizeof be) ? 0 : -1;
+}
 
 static inline uint64_t mask_n(unsigned n) {
     return (n == 64) ? ~0ULL : ((1ULL << n) - 1ULL);
@@ -298,6 +305,11 @@ Nodo* arbol(int n, Nodo** nodosEmparejar){
     }
 
     return nodosEmparejar[0];
+}
+
+unsigned int contarArbol(Nodo* arbol) {
+    if(!arbol) return 0;
+    return contarArbol(arbol->izq) + 1 + contarArbol(arbol->der);
 }
 
 void printArbol(Nodo* arbol){
@@ -586,7 +598,7 @@ static void guardarArbol_preorden_char_o_cero(const Nodo *n,
     guardarArbol_preorden_char_o_cero(n->der, w, pos, out);
 }
 
-int escribir_header_arbol_char0(const char *outfile, const Nodo *raiz)
+int escribir_header_arbol_char0(const char *outfile, const Nodo *raiz, uint32_t len)
 {
     if (!outfile || !raiz) {
         fprintf(stderr, "[header_arbol] parámetros inválidos\n");
@@ -597,6 +609,14 @@ int escribir_header_arbol_char0(const char *outfile, const Nodo *raiz)
         fprintf(stderr, "No pude crear '%s': %s\n", outfile, strerror(errno));
         return 2;
     }
+
+    if (write_u32_be(out, len) != 0) {
+        fprintf(stderr, "No pude escribir len del árbol\n");
+        fclose(out);
+        return 3;
+    }
+
+
     uint64_t w = 0; unsigned pos = 0;
 
     // PREORDEN: wchar_t completo en hojas, 0 en internos
@@ -756,6 +776,7 @@ int fusionar_temporales_con_separador_bits_del(const char *dirpath,
         write_ascii_as_bits(&w, &pos, title, out);
         // SEPARADOR
         append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
+        append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
         // Data
         if (write_file_bytes_as_bits(&w, &pos, full, out) != 0) {
             fprintf(stderr, "Fallo procesando '%s'\n", full);
@@ -903,7 +924,7 @@ int testNuevo(){
 
     nodosEmparejar[dictLength] = malloc(sizeof(Nodo));
     nodosEmparejar[dictLength]->d = &diccionario[dictLength];
-    nodosEmparejar[dictLength]->frecuencia = 300;
+    nodosEmparejar[dictLength]->frecuencia = 400;
     nodosEmparejar[dictLength]->izq = NULL;
     nodosEmparejar[dictLength]->der = NULL;
     dictLength++;
@@ -916,6 +937,11 @@ int testNuevo(){
     codigo[0] = 0;
     asignarCodigos(a, codigo, 0);
     wprintf(L"Holi, termine los codigos\n");
+
+    unsigned int len = contarArbol(a);
+    len++;
+    len = len*32;
+    //printf("Len: %d\n", len);
 
     /*
     int max = -1;
@@ -950,7 +976,7 @@ int testNuevo(){
 
 
 
-    if (escribir_header_arbol_char0("Comprimido.bin", a) != 0) {
+    if (escribir_header_arbol_char0("Comprimido.bin", a, (uint32_t)len) != 0) {
         fprintf(stderr, "No se pudo escribir header del árbol\n");
         return 1;
     }
@@ -976,8 +1002,8 @@ int testNuevo(){
 static int leer_opcion(void) {
     for (;;) {
         printf("\n=== Menú ===\n");
-        printf("  1) Comprimir .\\Libros\\ \n");
-        printf("  2) Descomprimir .\\comprimido.kirby \n");
+        printf("  1) Comprimir .\\Libros\\* \n");
+        printf("  2) Descomprimir .\\Comprimido.kirby \n");
         printf("> ");
         fflush(stdout);
 
@@ -996,6 +1022,16 @@ static int leer_opcion(void) {
     }
 }
 
+static inline uint64_t now_ms(void) {
+    struct timespec ts;
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) {
+        // en sistemas muy antiguos podía requerir -lrt (no en Debian moderno)
+        perror("clock_gettime");
+        return 0;
+    }
+    return (uint64_t)ts.tv_sec * 1000ULL + (uint64_t)ts.tv_nsec / 1000000ULL;
+}
+
 
 int main(){
     int opcion = leer_opcion();
@@ -1004,17 +1040,25 @@ int main(){
         return 1;
     }
 
+    uint64_t t0, t1;
+
     switch (opcion) {
         case 1:
             printf("Elegiste la opción Comprimir Libros\n");
+            t0 = now_ms();
             testNuevo();
+            t1 = now_ms();
             break;
 
         case 2:
             printf("Elegiste la opción Descomprimir Libros\n");
+            t0 = now_ms();
             descomprimir();
+            t1 = now_ms();
             break;
     }
+
+    printf("Tardó %.3f ms\n", (double)(t1 - t0));
 
     return 0;
 }

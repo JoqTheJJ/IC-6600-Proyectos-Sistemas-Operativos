@@ -382,23 +382,27 @@ Library* divideBooks(Book *books) {
     Book *title = book_new();
     Book *book = book_new();
     short separadores = 0;
+    bool lastSeparador = false;
 
     Letter *l = books->first;
     while(l) {
         if (l->c == SEPARADOR2) {
-            ++separadores;
-            if (separadores > 3) {
+            if (lastSeparador)
+                separadores++;
+            if (separadores > 2) {
                 separadores = 1;
                 library_push(result, title, book);
                 title = book_new();
                 book = book_new();
             }
+            lastSeparador = true;
         } else {
-            if (separadores == 3) {
+            if (separadores == 2 || separadores == 0) {
                 book_push_back(book, l->c);
             } else {
                 book_push_back(title, l->c);
             }
+            lastSeparador = false;
         }
        l = l->nxt; 
     }
@@ -586,12 +590,13 @@ int library_export_to_txts(const Library *lib, const char *output_dir, size_t *o
 }
 
 int descomprimir() {
-    const char *path = "comprimido.kirby";
+    //const char *path = "ComprimidoPrueba.kirby";
+    const char *path = "Comprimido.bin";
 
     KirbyFile kf;
     if (!parse_kirby_be(path, &kf)) return 2;
 
-    //dump_demo(&kf);
+    dump_demo(&kf);
 
     size_t i = 0;
     Arbol *root = build_full_preorder_u32(kf.dict_chars, &i, kf.dict_count);

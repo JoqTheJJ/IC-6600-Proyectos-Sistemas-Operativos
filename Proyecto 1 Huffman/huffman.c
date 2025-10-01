@@ -783,8 +783,6 @@ int fusionar_temporales_con_separador_bits_del(const char *dirpath,
             free(paths);
             return 10;
         }
-        // SEPARADOR
-        append_code_from_str_msb(&w, &pos, sep_bits, sep_len, out);
 
         free(title);
         processed++;
@@ -921,7 +919,7 @@ int testNuevo(){
 
     nodosEmparejar[dictLength] = malloc(sizeof(Nodo));
     nodosEmparejar[dictLength]->d = &diccionario[dictLength];
-    nodosEmparejar[dictLength]->frecuencia = 400;
+    nodosEmparejar[dictLength]->frecuencia = 200;
     nodosEmparejar[dictLength]->izq = NULL;
     nodosEmparejar[dictLength]->der = NULL;
     dictLength++;

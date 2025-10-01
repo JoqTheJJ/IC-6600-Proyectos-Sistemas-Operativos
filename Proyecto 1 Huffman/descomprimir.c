@@ -389,18 +389,16 @@ Library* divideBooks(Book *books) {
         if (l->c == SEPARADOR2) {
             if (lastSeparador)
                 separadores++;
-            if (separadores > 2) {
+            if (separadores > 1) {
                 separadores = 1;
                 library_push(result, title, book);
-                title = book_new();
                 book = book_new();
+                title = book_new();
             }
             lastSeparador = true;
         } else {
-            if (separadores == 2 || separadores == 0) {
+            if (separadores == 1 || separadores == 0) {
                 book_push_back(book, l->c);
-            } else {
-                book_push_back(title, l->c);
             }
             lastSeparador = false;
         }

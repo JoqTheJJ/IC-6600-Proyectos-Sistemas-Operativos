@@ -10,8 +10,10 @@ ArrayList<Page> MMUOPT;
 ArrayList<Page> MMUALG;
 
 OPT OPT;
+ALG ALG;
 
 int mmuMax;
+int scrollMaxCount;
 
 
 float offsetY = 0; //Scroll
@@ -20,7 +22,7 @@ void setup(){
   size(1000, 600);
   cp5 = new ControlP5(this);
   
-  mmuMax = 39;
+  mmuMax = 6;
   
   mOPT = new Memoria(100);
   mALG = new Memoria(100);
@@ -29,6 +31,7 @@ void setup(){
   MMUALG = new ArrayList<Page>();
   
   OPT = new OPT(2);
+  ALG = new ALG(10);
   
   MMUOPT.add(new Page(0,0,0,0,0,0,false,false));
   MMUOPT.add(new Page(1,0,0,0,0,0,true,true));
@@ -43,6 +46,8 @@ void setup(){
   MMUALG.add(new Page(0,0,0,0,0,0,false,false));
   MMUALG.add(new Page(2,0,0,0,0,0,true,true));
   MMUALG.add(new Page(3,0,0,0,0,0,true,true));
+  
+  scrollMaxCount = ((3*height/8)/15)-2;
 }
 
 void draw(){
@@ -54,6 +59,9 @@ void draw(){
   
   OPT.display();
   OPT.update();
+  
+  ALG.display();
+  ALG.update();
   
   stroke(255);
   line(width/2, 0, width/2, height);
@@ -71,16 +79,35 @@ void draw(){
 
 
 void mouseWheel(MouseEvent event){
-  int x = max(mmuMax - 40, 0);
+  int x = max(mmuMax - scrollMaxCount, 0);
   offsetY -= event.getCount() * 25;
   offsetY = constrain(offsetY, -x * 15, 0);
 }
 
 void mousePressed(){
+  randomSeed(millis());
   if (mouseButton == LEFT){
-    mmuMax++;
+    addRandomPage();
   } else if (mouseButton == RIGHT){
-    mmuMax--;
+    deleteLastPage();
   }
 
+}
+
+void addRandomPage(){
+  MMUOPT.add(new Page(
+      mmuMax++,
+      (int)random(10),
+      (int)random(10),
+      (int)random(10),
+      (int)random(10),
+      (int)random(10),
+      false,
+      true
+      ));
+}
+
+void deleteLastPage(){
+  MMUOPT.remove(MMUOPT.size() - 1);
+  mmuMax--;
 }

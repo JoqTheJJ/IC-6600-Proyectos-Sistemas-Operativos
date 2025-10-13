@@ -80,14 +80,19 @@ void drawPages(ArrayList<Page> pages, int algorythm){
   int posY = 5*height/8;
   int ancho = 4*width/12;
   
-  text("Page ID", posX + 5, posY);
-  text("PID", posX + 45, posY);
-  text("Loaded", posX + 85, posY);
-  text("L-Addr", posX + 125, posY);
-  text("M-Addr", posX + 165, posY);
-  text("D-Addr", posX + 205, posY);
-  text("Loaded-T", posX + 245, posY);
-  text("Mark", posX + 285, posY);
+  int colWidth = ancho/8;
+  
+  fill(0);
+  posY -= 2;
+  text("Page ID", posX, posY);
+  text("PID", posX + colWidth, posY);
+  text("Loaded", posX + colWidth*2, posY);
+  text("L-Addr", posX + colWidth*3, posY);
+  text("M-Addr", posX + colWidth*4, posY);
+  text("D-Addr", posX + colWidth*5, posY);
+  text("Loaded-T", posX + colWidth*6, posY);
+  text("Mark", posX + colWidth*7, posY);
+  posY += 2;
   
   for (Page page:pages){
     fill(pageColor(page.id));
@@ -97,20 +102,20 @@ void drawPages(ArrayList<Page> pages, int algorythm){
     posY += 12;
     fill(0);
     text(page.id, posX + 5, posY);
-    text(page.pid, posX + 45, posY);
+    text(page.pid, posX + colWidth + 5, posY);
     
     if (page.loaded){
-      text("X", posX + 85, posY);
+      text("X", posX + colWidth*2 + 5, posY);
     }
     
-    text(page.laddr, posX + 125, posY);
-    text(page.maddr, posX + 165, posY);
-    text(page.daddr, posX + 205, posY);
+    text(page.laddr, posX + colWidth*3 + 5, posY);
+    text(page.maddr, posX + colWidth*4 + 5, posY);
+    text(page.daddr, posX + colWidth*5 + 5, posY);
     
-    text(page.loadedtime, posX + 245, posY);
+    text(page.loadedtime, posX + colWidth*6 + 5, posY);
     
     if (page.mark){
-      text("X", posX + 285, posY);
+      text("X", posX + colWidth*7 + 5, posY);
     }
     
     posY += 3;

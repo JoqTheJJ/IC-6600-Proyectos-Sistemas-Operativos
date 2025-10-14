@@ -10,8 +10,8 @@ ControlP5 cp5;
 Slider frameRateSlider;
 float framerate = 60;
 
-Memoria mOPT;
-Memoria mALG;
+Memory mOPT;
+Memory mALG;
 
 ArrayList<Page> MMUOPT;
 ArrayList<Page> MMUALG;
@@ -24,8 +24,13 @@ int mmuMax;
 
 
 void setup(){
-  //fullScreen();
-  size(1000, 600);
+  fullScreen();
+  //size(1000, 600);
+  
+  //Color mode
+  colorMode(HSB, 360, 100, 100);
+  
+  
   cp5 = new ControlP5(this);
   
   //slider framerate
@@ -37,8 +42,8 @@ void setup(){
   
   mmuMax = 6;
   
-  mOPT = new Memoria(100);
-  mALG = new Memoria(100);
+  mOPT = new Memory(100);
+  mALG = new Memory(100);
   
   MMUOPT = new ArrayList<Page>();
   MMUALG = new ArrayList<Page>();
@@ -80,7 +85,7 @@ void draw(){
     
     addRandomPage();
   
-    if (MMUOPT.size() > 20){
+    if (MMUOPT.size() > scrollMaxCount){
       MMUOPT.clear();
     }
   }
@@ -90,8 +95,8 @@ void draw(){
   stroke(255);
   line(width/2, 0, width/2, height);
   
-  drawMemoria(mOPT, 0);
-  drawMemoria(mALG, 1);
+  drawMemory(mOPT, 0);
+  drawMemory(mALG, 1);
   
   drawPages(MMUOPT, 0);
   drawPages(MMUALG, 1);
@@ -127,7 +132,7 @@ void keyPressed(){
 }
 
 void addRandomPage(){
-  randomSeed(millis());
+  randomSeed((long)System.nanoTime());
   MMUOPT.add(new Page(
       mmuMax++,
       (int)random(10),

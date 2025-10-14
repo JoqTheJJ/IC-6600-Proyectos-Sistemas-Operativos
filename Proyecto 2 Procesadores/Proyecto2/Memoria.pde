@@ -29,13 +29,13 @@ class Page {
 
 
 
-class Memoria {
+class Memory {
   int len; //Tamano memoria actual
   int fallos;
   int[] ram;
   final int ramSize; //Tamano maximo
   
-  Memoria(int size){
+  Memory(int size){
     this.len = 0;
     this.fallos = 0;
     this.ramSize = size;
@@ -45,7 +45,7 @@ class Memoria {
   
 }
 
-void drawMemoria(Memoria m, int algorythm){
+void drawMemory(Memory m, int algorythm){
   
   int posY = height/8 + algorythm*height/16;
   int squareWidth = 10*width/12 /m.ramSize;
@@ -64,16 +64,19 @@ void drawMemoria(Memoria m, int algorythm){
 }
 
 
-/*
-fill(255);
-    rect(ancho, y, ancho, altura);
-    fill(0);
-    text(loadedPages, ancho +1, y + altura - 1);
-*/
+///////////////////////////////////////////////////////
+//////////////           PAGES           //////////////
+///////////////////////////////////////////////////////
 
-color pageColor(int seed){
-  randomSeed(seed);
-  return color(random(155)+100, random(155)+100, random(155)+100);
+
+
+
+void pageColor(int seed){
+  randomSeed(seed);  
+  float h = (seed*37+156) % 360;
+  float s = 30 + (seed * 71) % 40;
+  float b = 60 + (seed * 97) % 20;
+  fill(h, s, b);
 }
 
 void drawPages(ArrayList<Page> pages, int algorythm){
@@ -97,7 +100,7 @@ void drawPages(ArrayList<Page> pages, int algorythm){
   posY += 2;
   
   for (Page page:pages){
-    fill(pageColor(page.pid));
+    pageColor(page.pid); //Assigns the color of the process based on the pid
     stroke(0);
     rect(posX, posY, ancho, 15);
     

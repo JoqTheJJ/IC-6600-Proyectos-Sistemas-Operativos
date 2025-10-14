@@ -1,7 +1,14 @@
 import controlP5.*;
 import java.util.ArrayList;
 
+
+boolean pause = false; //Pause the simulation
+float offsetY = 0; //Scroll
+int scrollMaxCount; //Scroll pages amount
+
 ControlP5 cp5;
+Slider frameRateSlider;
+float framerate = 60;
 
 Memoria mOPT;
 Memoria mALG;
@@ -13,14 +20,20 @@ OPT OPT;
 ALG ALG;
 
 int mmuMax;
-int scrollMaxCount;
 
 
-float offsetY = 0; //Scroll
+
 void setup(){
   //fullScreen();
   size(1000, 600);
   cp5 = new ControlP5(this);
+  
+  //slider framerate
+  frameRateSlider = cp5.addSlider("framerate")
+          .setPosition(width/12, height/16)
+          .setSize(width/3, 20)
+          .setRange(5, 150)
+          .setValue(framerate);
   
   mmuMax = 6;
   
@@ -42,10 +55,10 @@ void setup(){
   
   MMUALG.add(new Page(0,0,0,0,0,0,false,true));
   MMUALG.add(new Page(1,0,0,0,0,0,true,true));
-  MMUALG.add(new Page(2,0,0,0,0,0,true,false));
-  MMUALG.add(new Page(0,0,0,0,0,0,false,false));
-  MMUALG.add(new Page(2,0,0,0,0,0,true,true));
-  MMUALG.add(new Page(3,0,0,0,0,0,true,true));
+  MMUALG.add(new Page(2,1,0,0,0,0,true,false));
+  MMUALG.add(new Page(0,2,0,0,0,0,false,false));
+  MMUALG.add(new Page(2,1,0,0,0,0,true,true));
+  MMUALG.add(new Page(3,3,0,0,0,0,true,true));
   
   scrollMaxCount = ((3*height/8)/15)-2;
 }
@@ -54,20 +67,31 @@ void draw(){
   background(200);
   
   translate(0, offsetY);
-  
+  frameRate(framerate);
   
   
   OPT.display();
-  OPT.update();
-  
   ALG.display();
-  ALG.update();
+  
+  
+  if (!pause){
+    OPT.update();
+    ALG.update();
+    
+    addRandomPage();
+  
+    if (MMUOPT.size() > 20){
+      MMUOPT.clear();
+    }
+  }
+  
+  
   
   stroke(255);
   line(width/2, 0, width/2, height);
   
-  drawMemoria(mOPT, 50);
-  drawMemoria(mALG, 80);
+  drawMemoria(mOPT, 0);
+  drawMemoria(mALG, 1);
   
   drawPages(MMUOPT, 0);
   drawPages(MMUALG, 1);
@@ -79,22 +103,31 @@ void draw(){
 
 
 void mouseWheel(MouseEvent event){
+  int mmuMax = max(MMUOPT.size(), MMUALG.size());
   int x = max(mmuMax - scrollMaxCount, 0);
   offsetY -= event.getCount() * 25;
   offsetY = constrain(offsetY, -x * 15, 0);
 }
 
 void mousePressed(){
-  randomSeed(millis());
+  
+  /*
   if (mouseButton == LEFT){
     addRandomPage();
   } else if (mouseButton == RIGHT){
     deleteLastPage();
-  }
+  }*/
 
 }
 
+void keyPressed(){
+  if (key == ' '){
+    pause = !pause;
+  }
+}
+
 void addRandomPage(){
+  randomSeed(millis());
   MMUOPT.add(new Page(
       mmuMax++,
       (int)random(10),

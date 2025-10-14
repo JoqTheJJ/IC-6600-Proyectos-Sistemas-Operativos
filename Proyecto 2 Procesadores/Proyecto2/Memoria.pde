@@ -45,7 +45,9 @@ class Memoria {
   
 }
 
-void drawMemoria(Memoria m, int posY){
+void drawMemoria(Memoria m, int algorythm){
+  
+  int posY = height/8 + algorythm*height/16;
   int squareWidth = 10*width/12 /m.ramSize;
   int posX = width/12;
   int incrementX = squareWidth;
@@ -95,7 +97,7 @@ void drawPages(ArrayList<Page> pages, int algorythm){
   posY += 2;
   
   for (Page page:pages){
-    fill(pageColor(page.id));
+    fill(pageColor(page.pid));
     stroke(0);
     rect(posX, posY, ancho, 15);
     

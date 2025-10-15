@@ -1,5 +1,8 @@
 import controlP5.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 
 boolean pause = false; //Pause the simulation
@@ -24,8 +27,8 @@ int mmuMax;
 
 
 void setup(){
-  fullScreen();
-  //size(1000, 600);
+  //fullScreen();
+  size(1000, 600);
   
   //Color mode
   colorMode(HSB, 360, 100, 100);
@@ -34,11 +37,14 @@ void setup(){
   cp5 = new ControlP5(this);
   
   //slider framerate
+  PFont sliderFont = createFont("Arial", 1);
   frameRateSlider = cp5.addSlider("framerate")
           .setPosition(width/12, height/16)
           .setSize(width/3, 20)
           .setRange(5, 150)
-          .setValue(framerate);
+          .setValue(framerate)
+          .setCaptionLabel("");
+          //.setFont(sliderFont)
   
   mmuMax = 6;
   
@@ -116,12 +122,13 @@ void mouseWheel(MouseEvent event){
 
 void mousePressed(){
   
-  /*
   if (mouseButton == LEFT){
-    addRandomPage();
-  } else if (mouseButton == RIGHT){
-    deleteLastPage();
-  }*/
+    pruebaMUM();
+  }
+  
+  if (mouseButton == RIGHT){
+    //deleteLastPage();
+  }
 
 }
 

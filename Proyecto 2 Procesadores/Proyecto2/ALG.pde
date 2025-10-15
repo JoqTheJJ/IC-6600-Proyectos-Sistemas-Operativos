@@ -50,12 +50,12 @@ class ALG{
     
 
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho*2, altura);
     fill(0);
     text("Processes", x+ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+3*ancho, y, ancho*2, altura);
     fill(0);
     text("Simulation Time", x+3*ancho +1, y + altura - 1);
@@ -63,12 +63,12 @@ class ALG{
     //\\ y //\\
     y += altura;
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho*2, altura*2);
     fill(0);
     text(processes, x+ancho +10, y + altura*1.5 - 1);
     
-    fill(255);
+    fill(360);
     rect(x+3*ancho, y, ancho*2, altura*2);
     fill(0);
     text(time + "s", x+3*ancho +10, y + altura*1.5 - 1);
@@ -78,22 +78,22 @@ class ALG{
     y += altura;
     y += altura;
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho, altura);
     fill(0);
     text("RAM KB", x+ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+2*ancho, y, ancho, altura);
     fill(0);
     text("RAM %", x+2*ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+3*ancho, y, ancho, altura);
     fill(0);
     text("V-RAM KB", x+3*ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+4*ancho, y, ancho, altura);
     fill(0);
     text("V-RAM %", x+4*ancho +1, y + altura - 1);
@@ -101,22 +101,22 @@ class ALG{
     //\\ y //\\
     y += altura;
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho, altura);
     fill(0);
     text(ramKB, x+ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+2*ancho, y, ancho, altura);
     fill(0);
     text(nf(ramPercentage * 100, 2, 2) + "%", x+2*ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+3*ancho, y, ancho, altura);
     fill(0);
     text(virtualRamKB, x+3*ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+4*ancho, y, ancho, altura);
     fill(0);
     text(nf(virtualRamPercentage * 100, 2, 2) + "%", x+4*ancho +1, y + altura - 1);
@@ -125,17 +125,17 @@ class ALG{
     y += altura;
     y += altura;
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho*2, altura);
     fill(0);
     text("PAGES", x+ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+3*ancho, y, ancho, altura);
     fill(0);
     text("Thrashing", x+3*ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+4*ancho, y, ancho, altura);
     fill(0);
     text("Fragmentacion", x+4*ancho +1, y + altura - 1);
@@ -143,27 +143,27 @@ class ALG{
     //\\ y //\\
     y += altura;
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho, altura);
     fill(0);
     text("LOADED", x+ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+2*ancho, y, ancho, altura);
     fill(0);
     text("UNLOADED", x+2*ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+3*ancho, y, ancho/2, altura*2);
     fill(0);
     text(thrashingTime + "s", x+3*ancho +1, y + altura*1.5 - 1);
     
-    fill(255);
+    fill(360);
     rect(3.5*ancho+x, y, ancho/2, altura*2);
     fill(0);
     text(nf(thrashingPercentage * 100, 2, 2) + "%", 3.5*ancho+x +1, y + altura*1.5 - 1);
     
-    fill(255);
+    fill(360);
     rect(4*ancho+x, y, ancho, altura*2);
     fill(0);
     text(fragmentacion + " KB", 4*ancho+x +1, y + altura*1.5 - 1);
@@ -171,12 +171,12 @@ class ALG{
     //\\ y //\\
     y += altura;
     
-    fill(255);
+    fill(360);
     rect(x+ancho, y, ancho, altura);
     fill(0);
     text(loadedPages, x+ancho +1, y + altura - 1);
     
-    fill(255);
+    fill(360);
     rect(x+2*ancho, y, ancho, altura);
     fill(0);
     text(unloadedPages, x+2*ancho +1, y + altura - 1);

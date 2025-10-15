@@ -55,7 +55,7 @@ void drawMemory(Memory m, int algorythm){
   int squareHeight = 20;
   
   stroke(0);
-  fill(255);
+  fill(360);
   
   for(int i = 0; i < m.ramSize; i++){
     rect(posX, posY, squareWidth, squareHeight);

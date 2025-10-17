@@ -28,7 +28,7 @@ int mmuMax;
 
 void setup(){
   //fullScreen();
-  size(1000, 600);
+  size(1200, 600);
   
   //Color mode
   colorMode(HSB, 360, 100, 100);
@@ -38,13 +38,19 @@ void setup(){
   
   //slider framerate
   PFont sliderFont = createFont("Arial", 1);
+  
   frameRateSlider = cp5.addSlider("framerate")
-          .setPosition(width/12, height/16)
+          .setPosition(width/12 + 70, height/16)
           .setSize(width/3, 20)
           .setRange(5, 150)
           .setValue(framerate)
           .setCaptionLabel("");
           //.setFont(sliderFont)
+          
+  cp5.addButton("pausa")
+     .setLabel("Pausa")
+     .setPosition(width/12, height/16)
+     .setSize(60, 20);
   
   mmuMax = 6;
   
@@ -55,7 +61,8 @@ void setup(){
   MMUALG = new ArrayList<Page>();
   
   OPT = new OPT(2);
-  ALG = new ALG(10);
+  ALG = new OPT(10);
+  ALG.x = width/2;
   
   MMUOPT.add(new Page(0,0,0,0,0,0,false,false));
   MMUOPT.add(new Page(1,0,0,0,0,0,true,true));
@@ -136,6 +143,10 @@ void keyPressed(){
   if (key == ' '){
     pause = !pause;
   }
+}
+
+void pausa(){
+  pause = !pause;
 }
 
 void addRandomPage(){

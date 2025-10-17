@@ -11,6 +11,7 @@ class Page {
   int loadedtime;
   boolean loaded;
   boolean mark;
+  int memoryUsed;
   
   Page(int id, int pid, int laddr, int maddr, int daddr, int loadedtime,
           boolean loaded, boolean mark){
@@ -109,13 +110,18 @@ void drawPages(ArrayList<Page> pages, int algorythm){
     text(page.id, posX + 5, posY);
     text(page.pid, posX + colWidth + 5, posY);
     
+    posX += 7;
     if (page.loaded){
       text("X", posX + colWidth*2 + 5, posY);
     }
     
     text(page.laddr, posX + colWidth*3 + 5, posY);
-    text(page.maddr, posX + colWidth*4 + 5, posY);
-    text(page.daddr, posX + colWidth*5 + 5, posY);
+    if (page.maddr != 0){
+      text(page.maddr, posX + colWidth*4 + 5, posY);
+    }
+    if (page.daddr != 0){
+      text(page.daddr, posX + colWidth*5 + 5, posY);
+    }
     
     text(page.loadedtime, posX + colWidth*6 + 5, posY);
     
@@ -123,6 +129,7 @@ void drawPages(ArrayList<Page> pages, int algorythm){
       text("X", posX + colWidth*7 + 5, posY);
     }
     
+    posX -= 7;
     posY += 3;
   }
   

@@ -1,5 +1,7 @@
-class ALG{
-  
+
+
+
+abstract class ALG{
   
   int processes;
   int time;
@@ -16,6 +18,8 @@ class ALG{
   int thrashingTime;
   float thrashingPercentage;
   int fragmentacion;
+  
+  int x = width/2;
   
   
   ALG(int processes){
@@ -36,9 +40,11 @@ class ALG{
     fragmentacion = 721;
   }
   
-  void update(){
-    
-  }
+  abstract void update();
+  abstract void iNEW();
+  abstract void iUSE();
+  abstract void iDEL();
+  abstract void iKILL();
   
   void display(){
     
@@ -46,7 +52,6 @@ class ALG{
     int altura = 20;
     
     int y = height/4;
-    int x = width/2;
     
 
     
@@ -130,7 +135,11 @@ class ALG{
     fill(0);
     text("PAGES", x+ancho +1, y + altura - 1);
     
-    fill(360);
+    if (thrashingTime > time*0.5){
+      fill(0, 68, 99);
+    } else {
+      fill(360);
+    }
     rect(x+3*ancho, y, ancho, altura);
     fill(0);
     text("Thrashing", x+3*ancho +1, y + altura - 1);
@@ -153,12 +162,20 @@ class ALG{
     fill(0);
     text("UNLOADED", x+2*ancho +1, y + altura - 1);
     
-    fill(360);
+    if (thrashingTime > time*0.5){
+      fill(0, 68, 99);
+    } else {
+      fill(360);
+    }
     rect(x+3*ancho, y, ancho/2, altura*2);
     fill(0);
     text(thrashingTime + "s", x+3*ancho +1, y + altura*1.5 - 1);
     
-    fill(360);
+    if (thrashingTime > time*0.5){
+      fill(0, 68, 99);
+    } else {
+      fill(360);
+    }
     rect(3.5*ancho+x, y, ancho/2, altura*2);
     fill(0);
     text(nf(thrashingPercentage * 100, 2, 2) + "%", 3.5*ancho+x +1, y + altura*1.5 - 1);

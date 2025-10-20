@@ -93,7 +93,7 @@ void setup(){
           //.setFont(sliderFont)
           
   pausa = cp5.addButton("pausa")
-     .setLabel("Pausa")
+     .setLabel("Pausar")
      .setPosition(width/12, height/16)
      .setSize(60, 20);
   pausa.hide();
@@ -232,8 +232,7 @@ void draw(){
     
     
     
-    stroke(255);
-    line(width/2, 0, width/2, height);
+
     
     drawMemory(mOPT, 0);
     drawMemory(mALG, 1);
@@ -270,12 +269,20 @@ void mousePressed(){
 
 void keyPressed(){
   if (key == ' '){
-    pause = !pause;
+    pausa();
   }
 }
 
 void pausa(){
-  pause = !pause;
+  if(!start){
+    pause = !pause;
+    
+    if (pause){
+      pausa.setLabel("Reanudar");
+    } else {
+      pausa.setLabel("Pausar");
+    }
+  }
 }
 
 void inicio(){
@@ -336,6 +343,9 @@ void deleteLastPage(){
 
 void startSimulation(){
   textFont(defaultFont);
+  
+  pause = true;
+  pausa.setLabel("Iniciar");
    
   menuProcesos.hide();
   menuOperaciones.hide();

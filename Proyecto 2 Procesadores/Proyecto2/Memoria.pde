@@ -1,30 +1,61 @@
 
 
 
+static class Page {
+    static int nextID = 0;
+    final int id;
+    int pid;
+    int laddr;
+    int maddr;
+    int daddr;
+    int loadedtime;
+    int lastCalledTime;
+    boolean loaded;
+    boolean mark;
+    int memoryUsed;
 
-class Page {
-  int id;
-  int pid;
-  int laddr;
-  int maddr;
-  int daddr;
-  int loadedtime;
-  boolean loaded;
-  boolean mark;
-  int memoryUsed;
-  
-  Page(int id, int pid, int laddr, int maddr, int daddr, int loadedtime,
-          boolean loaded, boolean mark){
-    this.id = id;
-    this.pid = pid;
-    this.loaded = loaded;
-    this.laddr = laddr;
-    this.maddr = maddr;
-    this.daddr = daddr;
-    this.loadedtime = loadedtime;
-    this.mark = mark;
-  }
+    public Page(int pid, int laddr, int memoryUsed) {
+        this.id =  ++nextID;
+        this.pid = pid;
+        this.laddr = laddr;
+        this.memoryUsed = memoryUsed;
+        this.loadedtime = 0;
+        this.lastCalledTime = 0;
+        this.loaded = true;
+    }
+    
+    public Page(int loadedtime, int daddr, int maddr, int laddr, int pid, int id, boolean loaded, boolean mark) {
+        this.loadedtime = loadedtime;
+        this.daddr = daddr;
+        this.maddr = maddr;
+        this.laddr = laddr;
+        this.pid = pid;
+        this.id = id;
+        this.loaded = loaded;
+        this.mark = mark;
+    }
+
+    public void setMaddr(int maddr) {
+        this.maddr = maddr;
+    }
+
+    public void setDaddr(int daddr) {
+        this.daddr = daddr;
+    }
+
+    public void incrementTime(int seconds) {
+        this.loadedtime += seconds;
+    }
+
+    public void changeLoaded() {
+        this.loaded =  !this.loaded;
+    }
+
+    public void changeMark() {
+        this.mark = !this.mark;
+    }
 }
+
 
 
 

@@ -23,7 +23,6 @@ class OPT extends ALG{
   
   
   OPT(int processes){
-    super(processes);
     
     this.processes = processes;
     time = 0;
@@ -42,6 +41,22 @@ class OPT extends ALG{
     fragmentacion = 127;
     
     x = 0;
+  }
+  
+  void callNew(int pid, int size) {
+    
+  }
+  
+  void callUse(int ptr) {
+    
+  }
+  
+  void callDelete(int ptr) {
+    
+  }
+  
+  void callKill(int pid) {
+    
   }
   
   void update(){

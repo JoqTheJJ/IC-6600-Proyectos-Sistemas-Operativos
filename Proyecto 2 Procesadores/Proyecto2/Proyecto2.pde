@@ -348,7 +348,6 @@ void startSimulation(){
   
   ALG.processes = procesos;
   ALG.time = 0;
-  crear.setLock(false);
 }
 
 

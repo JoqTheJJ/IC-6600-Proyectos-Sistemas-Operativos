@@ -109,11 +109,10 @@ public class MUM {
     }
 
     private String randomInstruction() {
-        String command = "";
-        if (processes.isEmpty()) {return command;}
+        String command;
         double chance = rand.nextDouble();
         if (pointers.isEmpty()) {
-            if (chance < 0.5) {
+            if (chance < 0.875 || processes.size() == 1) {
                 command = randomNew();
             }
             else {
@@ -121,14 +120,24 @@ public class MUM {
             }
         }
         else {
-            if (chance < 0.25) {
-                command = randomNew();
-            } else if (chance < 0.5) {
-                command = randomUse();
-            } else if (chance < 0.75) {
-                command = randomDelete();
+            if (processes.size() == 1) {
+                if (chance < (double) 1/3) {
+                    command = randomNew();
+                } else if (chance < (double) 2/3) {
+                    command = randomUse();
+                } else {
+                    command = randomDelete();
+                }
             } else {
-                command = randomKill();
+                    if (chance < (double) 7/24) {
+                        command = randomNew();
+                    } else if (chance < (double) 7/12) {
+                        command = randomUse();
+                    } else if (chance < (double) 7/8) {
+                        command = randomDelete();
+                    } else {
+                        command = randomKill();
+                    }
             }
         }
         return command;

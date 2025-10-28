@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 
 boolean pause = true; //Pause the simulation
 boolean start = true; //Main menu of the simulation
+int timer = -1;       //Timer for one advance frames
 float offsetY = 0; //Scroll
 int scrollMaxCount; //Scroll pages amount
 
@@ -32,6 +33,7 @@ Button inicio;
 Button menu;
 Button crear;
 Button cargar;
+Button jump;
 Slider frameRateSlider;
 float framerate = 60;
 float limitFrames = 600;
@@ -104,7 +106,7 @@ void setup(){
   
   //Slider framerate 
   frameRateSlider = cp5.addSlider("framerate")
-          .setPosition(width/12 + 70, height/16)
+          .setPosition(width/12 + 100, height/16)
           .setSize(width/3, 20)
           .setRange(5, limitFrames)
           .setValue(framerate)
@@ -112,6 +114,12 @@ void setup(){
   frameRateSlider.hide();
           //.setFont(sliderFont)
           
+  jump = cp5.addButton("jump")
+     .setLabel(">")
+     .setPosition(width/12 + 70, height/16)
+     .setSize(20, 20);
+  jump.hide();
+  
   pausa = cp5.addButton("pausa")
      .setLabel("Pausar")
      .setPosition(width/12, height/16)
@@ -120,7 +128,7 @@ void setup(){
   
   menu = cp5.addButton("menu")
      .setLabel("Menu")
-     .setPosition(5*width/12 + 80, height/16)
+     .setPosition(5*width/12 + 110, height/16)
      .setSize(60, 20);
   menu.hide();
   
@@ -292,6 +300,14 @@ void draw(){
     drawPages(ALG.pages, 1);
     
   }
+  
+  if (timer == 0){
+    pause = true;
+    timer--;
+  } else if (timer > 0) {
+    pause = false;
+    timer--;
+  }
 }
 
 
@@ -335,6 +351,10 @@ void pausa(){
       pausa.setLabel("Pausar");
     }
   }
+}
+
+void jump(){
+  timer = 1;
 }
 
 void inicio(){ //Boton
@@ -393,6 +413,7 @@ void menu(){ //Boton
    
   frameRateSlider.hide();
   pausa.hide();
+  jump.hide();
   menu.hide();
 }
 
@@ -449,11 +470,13 @@ void startSimulation(){
    
   frameRateSlider.show();
   pausa.show();
+  jump.show();
   menu.show();
   
   indice = 0;
   
   ALG.processes = procesos;
+  ALG.time = 0;
 }
 
 void menuPrincipal(){

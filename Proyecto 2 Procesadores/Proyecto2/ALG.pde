@@ -2,6 +2,10 @@
 
 
 abstract class ALG{
+    
+  
+    List<Page> pages;
+    Random rand;
   
     int lastPtr;
     int processes;
@@ -23,6 +27,10 @@ abstract class ALG{
   
   
     ALG(){
+      
+        this.pages = new ArrayList<Page>();
+        this.rand = new Random();
+      
         this.lastPtr = 0;
         this.processes = 0;
         this.time = 0;
@@ -35,6 +43,7 @@ abstract class ALG{
 
         this.thrashingTime = 0;
     }
+
     
     public void setProcesses(int processes) {
         this.processes += processes;
@@ -85,11 +94,40 @@ abstract class ALG{
     public abstract void callDelete(int ptr);
     public abstract void callKill(int pid);
   
-    abstract void update();
     abstract void iNEW();
     abstract void iUSE();
     abstract void iDEL();
     abstract void iKILL();
+
+
+
+    void update(String instruccion){
+      int n;
+      int open  = instruccion.indexOf('(');
+      int close = instruccion.lastIndexOf(')');
+      
+      if (instruccion.matches(patronUse)){
+        n = Integer.parseInt(instruccion.substring(open + 1, close).trim());
+        callUse(n);
+        
+      } else if (instruccion.matches(patronNew)){
+        String[] temp = instruccion.substring(open + 1, close).split("\\s*,\\s*");
+        n = Integer.parseInt(temp[0]);
+        int size = Integer.parseInt(temp[1]);
+        callNew(n, size);
+        
+      } else if (instruccion.matches(patronDelete)){
+        n = Integer.parseInt(instruccion.substring(open + 1, close).trim());
+        callDelete(n);
+        
+      } else if (instruccion.matches(patronKill)){
+        n = Integer.parseInt(instruccion.substring(open + 1, close).trim());
+        callKill(n);
+        
+      } else {
+        println("Angy ¯\\_(=/)_/¯");
+      }
+    }
   
     void display(){
       

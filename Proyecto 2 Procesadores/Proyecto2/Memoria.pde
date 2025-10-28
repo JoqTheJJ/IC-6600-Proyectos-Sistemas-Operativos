@@ -111,7 +111,7 @@ void pageColor(int seed){
   fill(h, s, b);
 }
 
-void drawPages(ArrayList<Page> pages, int algorythm){
+void drawPages(List<Page> pages, int algorythm){
   // algorythm = 0/1
   int posX = algorythm * width/2 + width/12;
   int posY = 5*height/8;

@@ -137,6 +137,7 @@ void setup(){
      .setPosition(width/2 + 150, height/2)
      .setSize(80, 25)
      .setFont(menuFont);
+  crear.setLock(true);
      
   cargar = cp5.addButton("cargar")
      .setLabel("Cargar")
@@ -277,12 +278,6 @@ void draw(){
       if (MMUOPT.size() > scrollMaxCount){
         MMUOPT.clear();
       }
-    }
-    
-    
-    
-
-    
     drawMemory(mOPT, 0);
     drawMemory(mALG, 1);
     
@@ -290,7 +285,7 @@ void draw(){
     
     println("Paginas en ALG:" + ALG.pages.size());
     drawPages(ALG.pages, 1);
-    
+    }
   }
   
   if (timer == 0){
@@ -353,6 +348,7 @@ void startSimulation(){
   
   ALG.processes = procesos;
   ALG.time = 0;
+  crear.setLock(false);
 }
 
 

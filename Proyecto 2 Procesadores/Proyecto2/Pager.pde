@@ -1,6 +1,5 @@
 public abstract class Pager extends ALG {
-    protected List<Page> pages = new ArrayList<>();
-    protected Random rand = new Random();
+
 
     public Pager() {}
 

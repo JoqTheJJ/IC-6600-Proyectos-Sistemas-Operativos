@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Comparator;
-
+import javax.swing.JOptionPane;
 
 
 // ############################################### //
@@ -30,6 +30,8 @@ ControlP5 cp5;
 Button pausa;
 Button inicio;
 Button menu;
+Button crear;
+Button cargar;
 Slider frameRateSlider;
 float framerate = 60;
 float limitFrames = 600;
@@ -55,6 +57,7 @@ int semilla = 0;
 // ################## Simulation ################# //
 // ############################################### //
 
+MUM mum;
 
 Memory mOPT;
 Memory mALG;
@@ -67,6 +70,22 @@ ALG ALG;
 
 int mmuMax;
 
+String instrucciones;
+String[] listaInstrucciones;
+int indice = -1;
+
+
+
+
+
+// ############################################### //
+// ################ Regex Patterns ############### //
+// ############################################### //
+
+String patronNew    = "new\\(.*";
+String patronDelete = "delete\\(.*";
+String patronUse    = "use\\(.*";
+String patronKill   = "kill\\(.*";
 
 
 void setup(){
@@ -104,6 +123,18 @@ void setup(){
      .setPosition(5*width/12 + 80, height/16)
      .setSize(60, 20);
   menu.hide();
+  
+  crear = cp5.addButton("crear")
+     .setLabel("Crear")
+     .setPosition(width/2 + 150, height/2)
+     .setSize(80, 25)
+     .setFont(menuFont);
+     
+  cargar = cp5.addButton("cargar")
+     .setLabel("Cargar")
+     .setPosition(width/2 + 150, height/2 + 30)
+     .setSize(80, 25)
+     .setFont(menuFont);
   
   inicio = cp5.addButton("inicio")
      .setLabel("Inicio")
@@ -147,7 +178,7 @@ void setup(){
     
   menuSemilla = cp5.addTextfield("inputSemilla")
     .setPosition(width/2, height/2)
-    .setSize(120, 28)
+    .setSize(120, 25)
     .setAutoClear(false)
     .setInputFilter(ControlP5.INTEGER)
     .setText(str(int(semilla)))
@@ -171,6 +202,11 @@ void setup(){
   menuSemilla.getCaptionLabel().setColor(color(0));
   
   mmuMax = 6;
+  mum = new MUM();
+  mum.setRandom(semilla);
+  mum.setProcesses(procesos);
+  instrucciones = mum.randomInstructions(operaciones);
+  listaInstrucciones = instrucciones.split("\\R");
   
   mOPT = new Memory(100);
   mALG = new Memory(100);
@@ -179,8 +215,9 @@ void setup(){
   MMUALG = new ArrayList<Page>();
   
   OPT = new OPT(2);
-  ALG = new OPT(10);
-  ALG.x = width/2;
+  ALG = new FIFO();
+  
+  
   
   MMUOPT.add(new Page(0,0,0,0,0,0,false,false));
   MMUOPT.add(new Page(1,0,0,0,0,0,true,true));
@@ -221,8 +258,19 @@ void draw(){
     
     
     if (!pause){
-      OPT.update();
-      ALG.update();
+      
+      indice++;
+      String instruccion;
+      if (indice >= listaInstrucciones.length){
+        instruccion = "uwu";
+      } else {
+        instruccion = listaInstrucciones[indice];
+      }
+      
+      
+      
+      OPT.update(instruccion);
+      ALG.update(instruccion);
       
       addRandomPage();
     
@@ -239,7 +287,9 @@ void draw(){
     drawMemory(mALG, 1);
     
     drawPages(MMUOPT, 0);
-    drawPages(MMUALG, 1);
+    
+    println("Paginas en ALG:" + ALG.pages.size());
+    drawPages(ALG.pages, 1);
     
   }
 }
@@ -259,11 +309,11 @@ void mouseWheel(MouseEvent event){
 void mousePressed(){
   
   if (mouseButton == LEFT){
-    pruebaMUM();
+    //pruebaMUM();
   }
   
   if (mouseButton == RIGHT){
-    //deleteLastPage();
+    println(instrucciones);
   }
 
 }
@@ -272,6 +322,7 @@ void keyPressed(){
   if (key == ' '){
     pausa();
   }
+  
 }
 
 void pausa(){
@@ -286,12 +337,50 @@ void pausa(){
   }
 }
 
-void inicio(){
+void inicio(){ //Boton
   start = false;
   startSimulation();
 }
 
-void menu(){
+void crear(){ //Boton
+  
+  mum.setRandom(semilla);
+  mum.setProcesses(procesos);
+
+  instrucciones = mum.randomInstructions(operaciones);
+  listaInstrucciones = instrucciones.split("\\R");
+  
+  
+  
+  int respuesta = JOptionPane.showConfirmDialog(
+    null,                              // Ventana padre (null = ventana principal)
+    "¿Desea guardar las instrucciones generadas?",             // Mensaje
+    "Guardar Archivo",                    // Título de la ventana
+    JOptionPane.YES_NO_OPTION          // Tipo de botones
+  );
+  
+  if (respuesta == JOptionPane.YES_OPTION) {
+    selectOutput("Elige donde guardar el archivo:", "archivoGuardado");
+  }
+}
+
+void cargar(){ //Boton
+  
+  selectInput("Selecciona un archivo a cargar:", "archivoSeleccionado");
+  
+  // ################### TEMPORAL ###################
+  // ################### TEMPORAL ###################
+  // ################### TEMPORAL ###################
+  
+
+  mum.setRandom(semilla);
+  mum.setProcesses(procesos);
+
+  instrucciones = mum.randomInstructions(operaciones);
+  listaInstrucciones = instrucciones.split("\\R");
+}
+
+void menu(){ //Boton
   start = true;
   
   menuProcesos.show();
@@ -299,6 +388,8 @@ void menu(){
   menuAlgoritmo.show();
   menuSemilla.show();
   inicio.show();
+  cargar.show();
+  crear.show();
    
   frameRateSlider.hide();
   pausa.hide();
@@ -340,23 +431,29 @@ void deleteLastPage(){
 }
 
 
-
-
 void startSimulation(){
   textFont(defaultFont);
   
   pause = true;
   pausa.setLabel("Iniciar");
+  //pid general = 0
+  //pid opt = 0
    
   menuProcesos.hide();
   menuOperaciones.hide();
   menuAlgoritmo.hide();
   menuSemilla.hide();
   inicio.hide();
+  cargar.hide();
+  crear.hide();
    
   frameRateSlider.show();
   pausa.show();
   menu.show();
+  
+  indice = 0;
+  
+  ALG.processes = procesos;
 }
 
 void menuPrincipal(){

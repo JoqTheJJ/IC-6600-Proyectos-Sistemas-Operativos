@@ -65,7 +65,7 @@ Memory mOPT;
 Memory mALG;
 
 ArrayList<Page> MMUOPT;
-ArrayList<Page> MMUALG;
+//ArrayList<Page> MMUALG;
 
 OPT OPT;
 ALG ALG;
@@ -220,7 +220,7 @@ void setup(){
   mALG = new Memory(100);
   
   MMUOPT = new ArrayList<Page>();
-  MMUALG = new ArrayList<Page>();
+  //MMUALG = new ArrayList<Page>();
   
   OPT = new OPT(2);
   ALG = new FIFO();
@@ -233,14 +233,7 @@ void setup(){
   MMUOPT.add(new Page(0,0,0,0,0,0,true,false));
   MMUOPT.add(new Page(2,0,0,0,0,0,false,true));
   MMUOPT.add(new Page(3,0,0,0,0,0,true,false));
-  
-  MMUALG.add(new Page(0,0,0,0,0,0,false,true));
-  MMUALG.add(new Page(1,0,0,0,0,0,true,true));
-  MMUALG.add(new Page(2,1,0,0,0,0,true,false));
-  MMUALG.add(new Page(0,2,0,0,0,0,false,false));
-  MMUALG.add(new Page(2,1,0,0,0,0,true,true));
-  MMUALG.add(new Page(3,3,0,0,0,0,true,true));
-  
+
   scrollMaxCount = ((3*height/8)/15)-2;
 }
 
@@ -280,7 +273,6 @@ void draw(){
       OPT.update(instruccion);
       ALG.update(instruccion);
       
-      addRandomPage();
     
       if (MMUOPT.size() > scrollMaxCount){
         MMUOPT.clear();
@@ -315,90 +307,7 @@ void draw(){
 
 
 
-void mouseWheel(MouseEvent event){
-  int mmuMax = max(MMUOPT.size(), MMUALG.size());
-  int x = max(mmuMax - scrollMaxCount, 0);
-  offsetY -= event.getCount() * 25;
-  offsetY = constrain(offsetY, -x * 15, 0);
-}
 
-void mousePressed(){
-  
-  if (mouseButton == LEFT){
-    //pruebaMUM();
-  }
-  
-  if (mouseButton == RIGHT){
-    println(instrucciones);
-  }
-
-}
-
-void keyPressed(){
-  if (key == ' '){
-    pausa();
-  }
-  
-}
-
-void pausa(){
-  if(!start){
-    pause = !pause;
-    
-    if (pause){
-      pausa.setLabel("Reanudar");
-    } else {
-      pausa.setLabel("Pausar");
-    }
-  }
-}
-
-void jump(){
-  timer = 1;
-}
-
-void inicio(){ //Boton
-  start = false;
-  startSimulation();
-}
-
-void crear(){ //Boton
-  
-  mum.setRandom(semilla);
-  mum.setProcesses(procesos);
-
-  instrucciones = mum.randomInstructions(operaciones);
-  listaInstrucciones = instrucciones.split("\\R");
-  
-  
-  
-  int respuesta = JOptionPane.showConfirmDialog(
-    null,                              // Ventana padre (null = ventana principal)
-    "¿Desea guardar las instrucciones generadas?",             // Mensaje
-    "Guardar Archivo",                    // Título de la ventana
-    JOptionPane.YES_NO_OPTION          // Tipo de botones
-  );
-  
-  if (respuesta == JOptionPane.YES_OPTION) {
-    selectOutput("Elige donde guardar el archivo:", "archivoGuardado");
-  }
-}
-
-void cargar(){ //Boton
-  
-  selectInput("Selecciona un archivo a cargar:", "archivoSeleccionado");
-  
-  // ################### TEMPORAL ###################
-  // ################### TEMPORAL ###################
-  // ################### TEMPORAL ###################
-  
-
-  mum.setRandom(semilla);
-  mum.setProcesses(procesos);
-
-  instrucciones = mum.randomInstructions(operaciones);
-  listaInstrucciones = instrucciones.split("\\R");
-}
 
 void menu(){ //Boton
   start = true;
@@ -417,39 +326,6 @@ void menu(){ //Boton
   menu.hide();
 }
 
-void inputSemilla(String txt){
-  if (txt == null || txt.length() == 0) return;
-  
-  try {
-    float v = float(txt);
-    menuSemilla.setText(str(int(v)));
-    semilla = (int) v;
-  } catch (Exception ex) {
-    // error/invalido (?)
-  }
-}
-
-
-
-
-void addRandomPage(){
-  randomSeed((long)System.nanoTime());
-  MMUOPT.add(new Page(
-      mmuMax++,
-      (int)random(10),
-      (int)random(10),
-      (int)random(10),
-      (int)random(10),
-      (int)random(10),
-      false,
-      true
-      ));
-}
-
-void deleteLastPage(){
-  MMUOPT.remove(MMUOPT.size() - 1);
-  mmuMax--;
-}
 
 
 void startSimulation(){
@@ -478,6 +354,8 @@ void startSimulation(){
   ALG.processes = procesos;
   ALG.time = 0;
 }
+
+
 
 void menuPrincipal(){
   

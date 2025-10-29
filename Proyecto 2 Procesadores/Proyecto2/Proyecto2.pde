@@ -61,12 +61,6 @@ int semilla = 0;
 
 MUM mum;
 
-Memory mOPT;
-Memory mALG;
-
-ArrayList<Page> MMUOPT;
-//ArrayList<Page> MMUALG;
-
 OPT OPT;
 ALG ALG;
 ALG FIFO;
@@ -222,14 +216,6 @@ void setup(){
   listaInstrucciones = instrucciones.split("\\R");
   
   OPT = new OPT();
-  
-  
-  MMUOPT.add(new Page(0,0,0,0,0,0,false,false));
-  MMUOPT.add(new Page(1,0,0,0,0,0,true,true));
-  MMUOPT.add(new Page(2,0,0,0,0,0,false,true));
-  MMUOPT.add(new Page(0,0,0,0,0,0,true,false));
-  MMUOPT.add(new Page(2,0,0,0,0,0,false,true));
-  MMUOPT.add(new Page(3,0,0,0,0,0,true,false));
 
   scrollMaxCount = ((3*height/8)/15)-2;
 }

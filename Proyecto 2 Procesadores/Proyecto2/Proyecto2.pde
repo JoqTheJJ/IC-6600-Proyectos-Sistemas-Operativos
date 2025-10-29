@@ -69,6 +69,11 @@ ArrayList<Page> MMUOPT;
 
 OPT OPT;
 ALG ALG;
+ALG FIFO;
+ALG SC;
+ALG MRU;
+ALG RND;
+
 
 int mmuMax;
 
@@ -137,7 +142,6 @@ void setup(){
      .setPosition(width/2 + 150, height/2)
      .setSize(80, 25)
      .setFont(menuFont);
-  crear.setLock(true);
      
   cargar = cp5.addButton("cargar")
      .setLabel("Cargar")
@@ -221,11 +225,8 @@ void setup(){
   mALG = new Memory(100);
   
   MMUOPT = new ArrayList<Page>();
-  //MMUALG = new ArrayList<Page>();
   
   OPT = new OPT(2);
-  ALG = new FIFO();
-  
   
   
   MMUOPT.add(new Page(0,0,0,0,0,0,false,false));
@@ -240,7 +241,6 @@ void setup(){
 
 void draw(){
   
-  //println(frameRate); //Aprox framerate
   if (start){ //Menu Principal
     
     background(#CECECE);
@@ -280,12 +280,11 @@ void draw(){
       MMUOPT.clear();
     }
     
-    drawMemory(mOPT, 0);
-    drawMemory(mALG, 1);
     
-    drawPages(MMUOPT, 0);
+    drawMemoryFromPages(OPT.pages, 0);
+    drawMemoryFromPages(ALG.pages, 1);
     
-    println("Paginas en ALG:" + ALG.pages.size());
+    drawPages(OPT.pages, 0);
     drawPages(ALG.pages, 1);
   }
   
@@ -347,6 +346,21 @@ void startSimulation(){
   menu.show();
   
   indice = -1;
+  
+  
+  switch (algoritmo){
+    case 0:
+      ALG = new FIFO();
+      
+    case 1:
+      ALG = new SC();
+      
+    case 2:
+      ALG = new MRU();
+      
+    case 3:
+      ALG = new RND();
+  }
   
   ALG.processes = procesos;
   ALG.time = 0;

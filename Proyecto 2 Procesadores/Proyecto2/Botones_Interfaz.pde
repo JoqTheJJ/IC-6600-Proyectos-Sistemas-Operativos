@@ -14,7 +14,9 @@ void mousePressed(){
   }
   
   if (mouseButton == RIGHT){
-    println(instrucciones);
+    for(int i = 0; i < listaInstrucciones.length; i++){
+       println(listaInstrucciones[i]);
+    }
   }
 
 }
@@ -85,16 +87,6 @@ void cargar(){ //Boton
   
   selectInput("Selecciona un archivo a cargar:", "archivoSeleccionado");
   
-  // ################### TEMPORAL ###################
-  // ################### TEMPORAL ###################
-  // ################### TEMPORAL ###################
-  
-
-  mum.setRandom(semilla);
-  mum.setProcesses(procesos);
-
-  instrucciones = mum.randomInstructions(operaciones);
-  listaInstrucciones = instrucciones.split("\\R");
 }
 
 

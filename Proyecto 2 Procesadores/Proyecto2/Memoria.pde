@@ -95,6 +95,30 @@ void drawMemory(Memory m, int algorythm){
   }
 }
 
+void drawMemoryFromPages(List<Page> list, int algorythm){
+  
+  int posY = height/8 + algorythm*height/16;
+  int squareWidth = 10*width/12 /100; //100 RAM pages
+  int posX = width/12;
+  int incrementX = squareWidth;
+  
+  int squareHeight = 20;
+  
+  stroke(0);
+  fill(360);
+  
+  for(int i = 0; i < list.size(); i++){
+    pageColor(list.get(i).pid);
+    rect(posX, posY, squareWidth, squareHeight);
+    posX += incrementX;
+  }
+  
+  for(int i = list.size(); i < 100; i++){
+    fill(360);
+    rect(posX, posY, squareWidth, squareHeight);
+    posX += incrementX;
+  }
+}
 
 ///////////////////////////////////////////////////////
 //////////////           PAGES           //////////////

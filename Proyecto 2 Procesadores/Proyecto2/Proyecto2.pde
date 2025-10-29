@@ -61,7 +61,7 @@ int semilla = 0;
 
 MUM mum;
 
-OPT OPT;
+ALG OPT;
 ALG ALG;
 ALG FIFO;
 ALG SC;
@@ -216,6 +216,7 @@ void setup(){
   listaInstrucciones = instrucciones.split("\\R");
   
   OPT = new OPT();
+  listaTraducida = new ArrayList<Integer>();
 
   scrollMaxCount = ((3*height/8)/15)-2;
 }
@@ -339,8 +340,13 @@ void startSimulation(){
     case 3:
       ALG = new RND();
   }
+  OPT = new OPT();
   
-  OPT.traducir(listaInstrucciones);
+  listaTraducida.clear();
+  traducir(listaInstrucciones);
+  OPT.processes = procesos;
+  OPT.time = 0;
+  
   ALG.processes = procesos;
   ALG.time = 0;
 }

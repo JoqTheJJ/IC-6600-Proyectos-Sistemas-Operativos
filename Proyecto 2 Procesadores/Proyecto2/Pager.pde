@@ -240,10 +240,6 @@ public abstract class Pager extends ALG {
     void update() {
       this.updateInfo();
     }
-    void iNEW() {}
-    void iUSE() {}
-    void iDEL() {}
-    void iKILL() {}
 }
 
 

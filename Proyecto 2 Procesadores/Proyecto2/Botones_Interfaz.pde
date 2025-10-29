@@ -37,6 +37,20 @@ void keyPressed(){
 
 
 
+void controlEvent(ControlEvent e) {
+  if (e.isFrom(menuProcesos)) {
+    procesos = int(e.getValue());
+  } else if (e.isFrom(menuOperaciones)) {
+    operaciones = int(e.getValue());
+  } else if (e.isFrom(menuAlgoritmo)) {
+    algoritmo = int(e.getValue());
+  }
+}
+
+
+
+
+
 
 
 

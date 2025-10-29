@@ -165,9 +165,9 @@ void setup(){
     .setSize(25, 25)
     .setItemsPerRow(1)
     .setSpacingRow(6)
-    .addItem("500", 0)
-    .addItem("1000", 1)
-    .addItem("5000", 2)
+    .addItem("500", 500)
+    .addItem("1000", 1000)
+    .addItem("5000", 5000)
     .activate(operaciones)
     .setFont(menuFont);
     
@@ -340,6 +340,7 @@ void startSimulation(){
       ALG = new RND();
   }
   
+  OPT.traducir(listaInstrucciones);
   ALG.processes = procesos;
   ALG.time = 0;
 }

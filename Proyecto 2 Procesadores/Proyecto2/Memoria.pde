@@ -107,13 +107,18 @@ void drawMemoryFromPages(List<Page> list, int algorythm){
   stroke(0);
   fill(360);
   
-  for(int i = 0; i < list.size(); i++){
-    pageColor(list.get(i).pid);
-    rect(posX, posY, squareWidth, squareHeight);
-    posX += incrementX;
+  int loaded = 0;
+  for(Page page : list){
+    
+    if (page.loaded){
+      pageColor(page.pid);
+      rect(posX, posY, squareWidth, squareHeight);
+      posX += incrementX;
+      loaded++;
+    }
   }
   
-  for(int i = list.size(); i < 100; i++){
+  for(int i = loaded; i < 100; i++){
     fill(360);
     rect(posX, posY, squareWidth, squareHeight);
     posX += incrementX;

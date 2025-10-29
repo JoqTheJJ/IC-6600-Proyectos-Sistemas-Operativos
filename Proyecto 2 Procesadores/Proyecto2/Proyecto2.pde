@@ -274,10 +274,12 @@ void draw(){
       OPT.update(instruccion);
       ALG.update(instruccion);
       
+    }
     
-      if (MMUOPT.size() > scrollMaxCount){
-        MMUOPT.clear();
-      }
+    if (MMUOPT.size() > scrollMaxCount){
+      MMUOPT.clear();
+    }
+    
     drawMemory(mOPT, 0);
     drawMemory(mALG, 1);
     
@@ -285,8 +287,8 @@ void draw(){
     
     println("Paginas en ALG:" + ALG.pages.size());
     drawPages(ALG.pages, 1);
-    }
   }
+  
   
   if (timer == 0){
     pause = true;

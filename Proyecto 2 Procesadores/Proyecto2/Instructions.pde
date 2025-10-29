@@ -112,7 +112,7 @@ public class MUM {
         String command;
         double chance = rand.nextDouble();
         if (pointers.isEmpty()) {
-            if (chance < 0.875 || processes.size() == 1) {
+            if (chance < (double) 63/64 || processes.size() == 1) {
                 command = randomNew();
             }
             else {
@@ -129,11 +129,11 @@ public class MUM {
                     command = randomDelete();
                 }
             } else {
-                    if (chance < (double) 7/24) {
+                    if (chance < (double) 21/64) {
                         command = randomNew();
-                    } else if (chance < (double) 7/12) {
+                    } else if (chance < (double) 21/32) {
                         command = randomUse();
-                    } else if (chance < (double) 7/8) {
+                    } else if (chance < (double) 63/64) {
                         command = randomDelete();
                     } else {
                         command = randomKill();

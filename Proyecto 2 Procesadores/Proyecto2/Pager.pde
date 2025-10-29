@@ -21,11 +21,13 @@ public abstract class Pager extends ALG {
         for (Page page : pages) {
             page.loaded = true;
             page.daddr = 0;
-            page.maddr = createRandomMADDR();
+            page.maddr = 0;
             if (isNew && !loaded) {
                 this.pages.add(page);
             }
         }
+
+        setMADDRs();
 
         if (isNew || !loaded) {
             this.setRamKB(pages.size() * 4);
@@ -42,10 +44,12 @@ public abstract class Pager extends ALG {
         List<Page> toUnload = getPagesbyPtr(ptr);
         for  (Page p : toUnload) {
             p.loaded = false;
-            p.daddr = createRandomDADDR();
+            p.daddr = 0;
             p.loadedtime = 0;
             p.maddr = 0;
         }
+
+        setDADDRs();
 
         this.setRamKB(toUnload.size() * 4 * -1);
         this.setLoadedPages(toUnload.size() * -1);
@@ -201,36 +205,23 @@ public abstract class Pager extends ALG {
         getFragmentation();
     }
 
-    private boolean maddrAlreadyChoosen(int maddr) {
+    private void setMADDRs() {
+        int nextMADDRs = 0;
         for (Page page : pages) {
-            if (page.loaded && page.maddr == maddr) {
-                return true;
+            if (page.loaded) {
+                page.maddr = ++nextMADDRs;
             }
         }
-        return false;
     }
 
-    private int createRandomMADDR() {
-        int maddr = rand.nextInt(100);
-        if (maddrAlreadyChoosen(maddr))
-            return createRandomMADDR();
-        return maddr;
-    }
 
-    private boolean daddrAlreadyChoosen(int daddr) {
+    private void setDADDRs() {
+        int nextDADDRs = 0;
         for (Page page : pages) {
-            if (!page.loaded && page.daddr == daddr) {
-                return true;
+            if (!page.loaded) {
+                page.daddr = ++nextDADDRs;
             }
         }
-        return false;
-    }
-
-    private int createRandomDADDR() {
-        int daddr = rand.nextInt(5000);
-        if (daddrAlreadyChoosen(daddr))
-            return createRandomDADDR();
-        return daddr;
     }
 
     public void printPages() {
@@ -360,12 +351,14 @@ private class MRU extends Pager {
         for (Page page : pages) {
             page.loaded = true;
             page.daddr = 0;
-            page.maddr = super.createRandomMADDR();
+            page.maddr = 0;
             page.lastCalledTime = 0;
             if (isNew && !loaded) {
                 this.pages.add(page);
             }
         }
+
+        super.setMADDRs();
 
         if (isNew || !loaded) {
             this.setRamKB(pages.size() * 4);

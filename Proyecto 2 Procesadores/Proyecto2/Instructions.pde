@@ -155,7 +155,6 @@ public class MUM {
         this.pointers.clear();
         this.nextPtr = 0;
         StringBuilder command = new StringBuilder();
-        System.out.println(this.pointers.size());
         for (int i = 0; i < quantity; i++) {
             command.append(randomInstruction());
         }

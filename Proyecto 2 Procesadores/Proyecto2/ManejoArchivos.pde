@@ -4,9 +4,9 @@ void archivoSeleccionado(File seleccion) {
   if (seleccion == null) {
     println("No se seleccionó ningún archivo.");
   } else {
-    String[] lines = loadStrings(seleccion);
-    for(int i = 0; i < lines.length; i++){
-       println(lines[i]);
+    listaInstrucciones = loadStrings(seleccion);
+    for(int i = 0; i < listaInstrucciones.length; i++){
+       println(listaInstrucciones[i]);
     }
     println("Archivo seleccionado: " + seleccion.getAbsolutePath());
   }

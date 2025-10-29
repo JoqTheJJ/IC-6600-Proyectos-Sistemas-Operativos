@@ -137,7 +137,6 @@ void setup(){
      .setPosition(width/2 + 150, height/2)
      .setSize(80, 25)
      .setFont(menuFont);
-  crear.setLock(true);
      
   cargar = cp5.addButton("cargar")
      .setLabel("Cargar")
@@ -240,7 +239,6 @@ void setup(){
 
 void draw(){
   
-  //println(frameRate); //Aprox framerate
   if (start){ //Menu Principal
     
     background(#CECECE);
@@ -285,7 +283,6 @@ void draw(){
     
     drawPages(MMUOPT, 0);
     
-    println("Paginas en ALG:" + ALG.pages.size());
     drawPages(ALG.pages, 1);
   }
   
@@ -346,7 +343,7 @@ void startSimulation(){
   jump.show();
   menu.show();
   
-  indice = 0;
+  indice = -1;
   
   ALG.processes = procesos;
   ALG.time = 0;

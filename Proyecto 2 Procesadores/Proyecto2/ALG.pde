@@ -94,10 +94,7 @@ abstract class ALG{
     public abstract void callDelete(int ptr);
     public abstract void callKill(int pid);
 
-    abstract void iNEW();
-    abstract void iUSE();
-    abstract void iDEL();
-    abstract void iKILL();
+
 
 
 

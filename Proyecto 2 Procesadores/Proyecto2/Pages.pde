@@ -59,74 +59,6 @@ static class Page {
 
 
 
-
-
-class Memory {
-  int len; //Tamano memoria actual
-  int fallos;
-  int[] ram;
-  final int ramSize; //Tamano maximo
-  
-  Memory(int size){
-    this.len = 0;
-    this.fallos = 0;
-    this.ramSize = size;
-    this.ram = new int[ramSize];
-  }
-  
-  
-}
-
-void drawMemory(Memory m, int algorythm){
-  
-  int posY = height/8 + algorythm*height/16;
-  int squareWidth = 10*width/12 /m.ramSize;
-  int posX = width/12;
-  int incrementX = squareWidth;
-  
-  int squareHeight = 20;
-  
-  stroke(0);
-  fill(360);
-  
-  for(int i = 0; i < m.ramSize; i++){
-    rect(posX, posY, squareWidth, squareHeight);
-    posX += incrementX;
-  }
-}
-
-void drawMemoryFromPages(List<Page> list, int algorythm){
-  
-  int posY = height/8 + algorythm*height/16;
-  int squareWidth = 10*width/12 /100; //100 RAM pages
-  int posX = width/12;
-  int incrementX = squareWidth;
-  
-  int squareHeight = 20;
-  
-  stroke(0);
-  fill(360);
-  
-  for(int i = 0; i < list.size(); i++){
-    pageColor(list.get(i).pid);
-    rect(posX, posY, squareWidth, squareHeight);
-    posX += incrementX;
-  }
-  
-  for(int i = list.size(); i < 100; i++){
-    fill(360);
-    rect(posX, posY, squareWidth, squareHeight);
-    posX += incrementX;
-  }
-}
-
-///////////////////////////////////////////////////////
-//////////////           PAGES           //////////////
-///////////////////////////////////////////////////////
-
-
-
-
 void pageColor(int seed){
   randomSeed(seed);  
   float h = (seed*37+156) % 360;
@@ -189,4 +121,34 @@ void drawPages(List<Page> pages, int algorythm){
   }
   
   
+}
+
+void drawMemoryFromPages(List<Page> list, int algorythm){
+  
+  int posY = height/8 + algorythm*height/16;
+  int squareWidth = 10*width/12 /100; //100 RAM pages
+  int posX = width/12;
+  int incrementX = squareWidth;
+  
+  int squareHeight = 20;
+  
+  stroke(0);
+  fill(360);
+  
+  int loaded = 0;
+  for(Page page : list){
+    
+    if (page.loaded){
+      pageColor(page.pid);
+      rect(posX, posY, squareWidth, squareHeight);
+      posX += incrementX;
+      loaded++;
+    }
+  }
+  
+  for(int i = loaded; i < 100; i++){
+    fill(360);
+    rect(posX, posY, squareWidth, squareHeight);
+    posX += incrementX;
+  }
 }

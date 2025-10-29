@@ -1,7 +1,7 @@
 
 
 void mouseWheel(MouseEvent event){
-  int mmuMax = max(MMUOPT.size(), ALG.pages.size());
+  int mmuMax = max(OPT.pages.size(), ALG.pages.size());
   int x = max(mmuMax - scrollMaxCount, 0);
   offsetY -= event.getCount() * 25;
   offsetY = constrain(offsetY, -x * 15, 0);

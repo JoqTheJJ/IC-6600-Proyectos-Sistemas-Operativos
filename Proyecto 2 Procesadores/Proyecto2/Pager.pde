@@ -17,20 +17,22 @@ public abstract class Pager extends ALG {
         }
     }
 
-    protected void loadPages(List<Page> pages, boolean isNew) {
+    protected void loadPages(List<Page> pages, boolean isNew, boolean loaded) {
         for (Page page : pages) {
             page.loaded = true;
             page.daddr = 0;
             page.maddr = createRandomMADDR();
-            if (isNew) {
+            if (isNew && !loaded) {
                 this.pages.add(page);
             }
         }
 
-        this.setRamKB(pages.size() * 4);
-        this.setLoadedPages(pages.size());
+        if (isNew || !loaded) {
+            this.setRamKB(pages.size() * 4);
+            this.setLoadedPages(pages.size());
+        }
 
-        if (!isNew) {
+        if (!isNew && !loaded) {
             setVirtualRamKB(pages.size() * 4 * -1);
             setUnloadedPages(pages.size() * -1);
         }
@@ -77,7 +79,7 @@ public abstract class Pager extends ALG {
         }
 
         // Cargar Informacion a las paginas y agregarlas
-        loadPages(newPages, true);
+        loadPages(newPages, true, false);
         this.incrementTimes(hits + (5 * misses), false);
         updateInfo();
     }
@@ -88,6 +90,7 @@ public abstract class Pager extends ALG {
 
         // Liberar espacio necesario
         int hits, misses;
+        boolean loaded;
         if (!isLoaded(ptr)) {
             int spaceNeeded = sizeNeeded(usePages);
             int freeMemory = getFreeMemory();
@@ -97,13 +100,15 @@ public abstract class Pager extends ALG {
                 this.unloadPages(whoToUnload());
                 freeMemory = getFreeMemory();
             }
+            loaded = false;
         } else {
             hits = usePages.size();
             misses = 0;
+            loaded = true;
         }
 
         // Cargar Informacion a las paginas llamadas
-        loadPages(usePages, false);
+        loadPages(usePages, false, loaded);
         this.incrementTimes(hits, false);
         this.incrementTimes(5 * misses, 0 < misses);
         updateInfo();
@@ -185,6 +190,7 @@ public abstract class Pager extends ALG {
                 fragmentation += 4000 - page.memoryUsed;
             }
         }
+        fragmentation /= 4000;
         setFragmentation(fragmentation);
     }
 
@@ -228,7 +234,7 @@ public abstract class Pager extends ALG {
     }
 
     public void printPages() {
-        System.out.println("Size: " + pages.size() + "\t|\t");
+        System.out.println("Size: " + pages.size());
         System.out.print("Loaded: [ ");
         for (Page page : pages) {
             if (page.loaded)
@@ -276,6 +282,7 @@ private class SC extends Pager {
 
         // Liberar espacio necesario
         int hits, misses;
+        boolean loaded;
         if (!super.isLoaded(ptr)) {
             int spaceNeeded = super.sizeNeeded(usePages);
             int freeMemory = super.getFreeMemory();
@@ -285,16 +292,18 @@ private class SC extends Pager {
                 this.unloadPages(whoToUnload());
                 freeMemory = super.getFreeMemory();
             }
+            loaded = false;
         } else {
             hits = usePages.size();
             misses = 0;
             for (Page page : usePages) {
                 page.mark = true;
             }
+            loaded = true;
         }
 
         // Cargar Informacion a las paginas llamadas
-        loadPages(usePages, false);
+        loadPages(usePages, false, loaded);
         this.incrementTimes(hits, false);
         this.incrementTimes(5 * misses, 0 < misses);
         updateInfo();
@@ -347,21 +356,23 @@ private class MRU extends Pager {
     }
 
     @Override
-    protected void loadPages(List<Page> pages, boolean isNew) {
+    protected void loadPages(List<Page> pages, boolean isNew, boolean loaded) {
         for (Page page : pages) {
             page.loaded = true;
             page.daddr = 0;
             page.maddr = super.createRandomMADDR();
             page.lastCalledTime = 0;
-            if (isNew) {
+            if (isNew && !loaded) {
                 this.pages.add(page);
             }
         }
 
-        this.setRamKB(pages.size() * 4);
-        this.setLoadedPages(pages.size());
+        if (isNew || !loaded) {
+            this.setRamKB(pages.size() * 4);
+            this.setLoadedPages(pages.size());
+        }
 
-        if (!isNew) {
+        if (!isNew && !loaded) {
             setVirtualRamKB(pages.size() * 4 * -1);
             setUnloadedPages(pages.size() * -1);
         }

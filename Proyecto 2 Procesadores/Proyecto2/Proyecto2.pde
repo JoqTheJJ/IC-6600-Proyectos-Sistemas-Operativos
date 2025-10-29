@@ -346,7 +346,7 @@ void startSimulation(){
   jump.show();
   menu.show();
   
-  indice = 0;
+  indice = -1;
   
   ALG.processes = procesos;
   ALG.time = 0;

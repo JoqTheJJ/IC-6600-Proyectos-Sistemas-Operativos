@@ -36,10 +36,18 @@ private final class Pointer {
 }
 
 public class MUM {
-    private int nextPtr = 0;
-    private List<Integer> processes = new ArrayList<>();
-    private List<Pointer> pointers = new ArrayList<>();
+    private int nextPtr;
+    private List<Integer> processes;
+    private List<Pointer> pointers;
     private Random rand = new Random();
+    
+    public MUM() {
+      this.nextPtr = 0;
+      this.processes = new ArrayList<>();
+      this.pointers = new ArrayList<>();
+      this.processes.clear();
+      this.pointers.clear();
+    }
 
     public void setRandom(long seed) {
         this.rand = new Random(seed);
@@ -144,7 +152,10 @@ public class MUM {
     }
 
     public String randomInstructions(int quantity) {
+        this.pointers.clear();
+        this.nextPtr = 0;
         StringBuilder command = new StringBuilder();
+        System.out.println(this.pointers.size());
         for (int i = 0; i < quantity; i++) {
             command.append(randomInstruction());
         }

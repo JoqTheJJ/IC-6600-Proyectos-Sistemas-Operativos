@@ -2,7 +2,7 @@
 
 
 static class Page {
-    static int nextID = 0;
+    //static int nextID = 0;
     final int id;
     int pid;
     int laddr;
@@ -14,8 +14,8 @@ static class Page {
     boolean mark;
     int memoryUsed;
 
-    public Page(int pid, int laddr, int memoryUsed) {
-        this.id =  ++nextID;
+    public Page(int id, int pid, int laddr, int memoryUsed) {
+        this.id =  id;
         this.pid = pid;
         this.laddr = laddr;
         this.memoryUsed = memoryUsed;

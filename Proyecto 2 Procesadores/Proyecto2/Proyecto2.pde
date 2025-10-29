@@ -39,9 +39,9 @@ float framerate = 60;
 float limitFrames = 600;
 
 RadioButton menuProcesos;
-int procesos = 50;
+int procesos = 10;
 RadioButton menuOperaciones;
-int operaciones = 5000;
+int operaciones = 500;
 RadioButton menuAlgoritmo;
 int algoritmo = 0;
 Textfield menuSemilla;

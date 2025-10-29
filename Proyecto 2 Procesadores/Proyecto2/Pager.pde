@@ -65,10 +65,10 @@ public abstract class Pager extends ALG {
 
         // Crear paginas
         for (int i = 0; i < pagesNeeded; ++i) {
-            newPages.add(new Page(pid, this.lastPtr, 4000));
+            newPages.add(new Page(++this.lastPageID, pid, this.lastPtr, 4000));
         }
         if (lastPageSpace != 0)
-            newPages.add(new Page(pid, this.lastPtr++, lastPageSpace));
+            newPages.add(new Page(++this.lastPageID, pid, this.lastPtr++, lastPageSpace));
         else
             ++this.lastPtr;
 
@@ -114,7 +114,7 @@ public abstract class Pager extends ALG {
         // Cargar Informacion a las paginas llamadas
         loadPages(usePages, false, loaded);
         this.incrementTimes(hits, false);
-        this.incrementTimes(5 * misses, 0 < misses);
+        this.incrementTimes(5 * misses, true);
         updateInfo();
     }
 

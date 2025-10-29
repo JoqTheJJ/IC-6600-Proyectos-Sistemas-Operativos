@@ -7,6 +7,7 @@ abstract class ALG{
     List<Page> pages;
     Random rand;
 
+    int lastPageID;
     int lastPtr;
     int processes;
     int time;
@@ -31,6 +32,7 @@ abstract class ALG{
         this.pages = new ArrayList<Page>();
         this.rand = new Random();
 
+        this.lastPageID = 0;
         this.lastPtr = 0;
         this.processes = 0;
         this.time = 0;

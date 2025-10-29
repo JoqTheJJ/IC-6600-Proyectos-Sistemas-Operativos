@@ -221,12 +221,7 @@ void setup(){
   instrucciones = mum.randomInstructions(operaciones);
   listaInstrucciones = instrucciones.split("\\R");
   
-  mOPT = new Memory(100);
-  mALG = new Memory(100);
-  
-  MMUOPT = new ArrayList<Page>();
-  
-  OPT = new OPT(2);
+  OPT = new OPT();
   
   
   MMUOPT.add(new Page(0,0,0,0,0,0,false,false));
@@ -276,9 +271,6 @@ void draw(){
       
     }
     
-    if (MMUOPT.size() > scrollMaxCount){
-      MMUOPT.clear();
-    }
     
     
     drawMemoryFromPages(OPT.pages, 0);

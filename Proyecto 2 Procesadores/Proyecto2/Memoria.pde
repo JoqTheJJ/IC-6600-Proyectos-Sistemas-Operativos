@@ -77,23 +77,6 @@ class Memory {
   
 }
 
-void drawMemory(Memory m, int algorythm){
-  
-  int posY = height/8 + algorythm*height/16;
-  int squareWidth = 10*width/12 /m.ramSize;
-  int posX = width/12;
-  int incrementX = squareWidth;
-  
-  int squareHeight = 20;
-  
-  stroke(0);
-  fill(360);
-  
-  for(int i = 0; i < m.ramSize; i++){
-    rect(posX, posY, squareWidth, squareHeight);
-    posX += incrementX;
-  }
-}
 
 void drawMemoryFromPages(List<Page> list, int algorythm){
   

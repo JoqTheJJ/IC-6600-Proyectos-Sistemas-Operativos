@@ -28,6 +28,8 @@ void traducir(String[] listaInstrucciones){
       listaTraducida.add(0);
     }
   }
+  
+  OPT.lastPtr = 0;
 }
 
 

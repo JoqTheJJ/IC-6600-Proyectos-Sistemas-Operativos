@@ -23,6 +23,7 @@ PFont hideFont;
 PFont defaultFont;
 PFont menuFontBig;
 PFont menuFont;
+PFont menuFontSmall;
 
 // ############################################### //
 // ################## ControlP5 ################## //
@@ -90,6 +91,7 @@ void setup(){
   hideFont = createFont("Arial", 1);
   defaultFont = createFont("SansSerif", 10);
   menuFontBig = createFont("8bitOperatorPlus8-Regular.ttf", 50);
+  menuFontSmall = createFont("8bitOperatorPlus8-Regular.ttf", 15);
   menuFont = createFont("8bitOperatorPlus8-Regular.ttf", 20);
   
   cp5 = new ControlP5(this);
@@ -215,9 +217,18 @@ void setup(){
 void draw(){
   
   if (start){ //Menu Principal
-    
+  
     background(#CECECE);
     fill(0);
+    
+    println("AAA");
+    textFont(menuFontSmall);
+    fill(0);
+    text("Cantidad Procesos",     width/2 - width/5, height/4 - 5);
+    text("Cantidad Intrucciones", width/2          , height/4 - 5);
+    text("Algoritmo",             width/2 + width/5, height/4 - 5);
+    textFont(defaultFont);
+
     
   } else { //Simulacion Principal
     

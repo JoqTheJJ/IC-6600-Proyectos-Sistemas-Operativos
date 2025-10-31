@@ -59,13 +59,13 @@ private class OPT extends Pager{
     
     @Override
     protected int whoToUnload() {
-      println("Holi estoy muerto");
+      //println("Holi estoy muerto");
       int ptr = -1;
       // indice (instriccion actual)
       int maxPos = -1;
 
-      println("<INDICE> : "+indice);
-      println("<listaTraducida.size()> : "+listaTraducida.size());
+      //println("<INDICE> : "+indice);
+      //println("<listaTraducida.size()> : "+listaTraducida.size());
       for (int i = indice+1; i < listaTraducida.size(); ++i){
         int currentPagePtr = listaTraducida.get(i);
 
@@ -74,7 +74,7 @@ private class OPT extends Pager{
           //La lista no esta vacia (???)          
           //La primera pagina del puntero esta cargada
           int currentPos = nextPos(indice+1, listaTraducida.get(i));
-          println("holi sigo vivo, btw: currentPos:" + currentPos);
+          //println("holi sigo vivo, btw: currentPos:" + currentPos);
           
           if (currentPos > maxPos){
             maxPos = currentPos;
@@ -82,7 +82,7 @@ private class OPT extends Pager{
           }
         }
       }
-      println(ptr + " era bromita");
+      //println(ptr + " era bromita");
         
       return ptr;
     }

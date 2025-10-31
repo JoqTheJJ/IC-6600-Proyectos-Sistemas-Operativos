@@ -330,15 +330,19 @@ void startSimulation(){
   switch (algoritmo){
     case 0:
       ALG = new FIFO();
+      break;
       
     case 1:
       ALG = new SC();
+      break;
       
     case 2:
       ALG = new MRU();
+      break;
       
     case 3:
       ALG = new RND();
+      break;
   }
   OPT = new OPT();
   

@@ -84,7 +84,8 @@ public abstract class Pager extends ALG {
 
         // Cargar Informacion a las paginas y agregarlas
         loadPages(newPages, true, false);
-        this.incrementTimes(hits + (5 * misses), false);
+        this.incrementTimes(hits, false);
+        this.incrementTimes(5 * misses, true);
         updateInfo();
     }
 
@@ -119,15 +120,29 @@ public abstract class Pager extends ALG {
     }
 
     public void callDelete(int ptr) {
-        this.deletePagesStats(this.getPagesbyPtr(ptr));
+        List<Page> found = this.getPagesbyPtr(ptr);
+        int hits = countLoaded(found);
+        int misses = found.size() - hits;
+        
+        this.deletePagesStats(found);
         pages.removeIf(page -> page.laddr == ptr);
+        
+        this.incrementTimes(hits, false);
+        this.incrementTimes(5 * misses, true);
         updateInfo();
     }
 
     public void callKill(int pid) {
-        this.deletePagesStats(this.getPagesbyPid(pid));
+        List<Page> found = this.getPagesbyPid(pid);
+        int hits = countLoaded(found);
+        int misses = found.size() - hits;
+      
+        this.deletePagesStats(found);
         this.processes--;
         pages.removeIf(page -> page.pid == pid);
+        
+        this.incrementTimes(hits, false);
+        this.incrementTimes(5 * misses, true);
         updateInfo();
     }
 
@@ -138,6 +153,15 @@ public abstract class Pager extends ALG {
             }
         }
         return false;
+    }
+    
+    private int countLoaded(List<Page> toCount) {
+      int result = 0;
+      for (Page p : toCount){
+        if(p.loaded)
+          result++;
+      }
+      return result;
     }
 
 
@@ -262,7 +286,7 @@ private class FIFO extends Pager {
 
 private class SC extends Pager {
 
-    @Override
+    /*@Override
     public void callUse(int ptr) {
         // Obtener paginas con el puntero
         List<Page> usePages = getPagesbyPtr(ptr);
@@ -292,8 +316,34 @@ private class SC extends Pager {
         // Cargar Informacion a las paginas llamadas
         loadPages(usePages, false, loaded);
         this.incrementTimes(hits, false);
-        this.incrementTimes(5 * misses, 0 < misses);
+        this.incrementTimes(5 * misses, true);
         updateInfo();
+    }*/
+    @Override
+    protected void loadPages(List<Page> pages, boolean isNew, boolean loaded) {
+        for (Page page : pages) {
+            page.loaded = true;
+            page.daddr = 0;
+            page.maddr = 0;
+            if (isNew && !loaded) {
+                this.pages.add(page);
+            }
+            if (!isNew && loaded) {
+              page.mark = true;
+            }
+        }
+
+        super.setMADDRs();
+
+        if (isNew || !loaded) {
+            this.setRamKB(pages.size() * 4);
+            this.setLoadedPages(pages.size());
+        }
+
+        if (!isNew && !loaded) {
+            setVirtualRamKB(pages.size() * 4 * -1);
+            setUnloadedPages(pages.size() * -1);
+        }
     }
 
     @Override

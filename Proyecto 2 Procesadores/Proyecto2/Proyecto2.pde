@@ -10,11 +10,12 @@ import javax.swing.JOptionPane;
 // ################## MetadataS ################## //
 // ############################################### //
 
-boolean pause = true; //Pause the simulation
-boolean start = true; //Main menu of the simulation
-int timer = -1;       //Timer for one advance frames
-float offsetY = 0; //Scroll
-int scrollMaxCount; //Scroll pages amount
+boolean pause = true;   //Pause the simulation
+boolean start = true;   //Main menu of the simulation
+boolean finish = false; //Finish for the simulation
+int timer = -1;         //Timer for one advance frames
+float offsetY = 0;      //Scroll
+int scrollMaxCount;     //Scroll pages amount
 
 // ################### <OTHER> ################### //
 
@@ -47,13 +48,14 @@ int algoritmo = 0;
 Textfield menuSemilla;
 int semilla = 0;
 
+// ############################################### //
+// ################ Regex Patterns ############### //
+// ############################################### //
 
-
-
-
-
-
-
+String patronNew    = "new\\(.*";
+String patronDelete = "delete\\(.*";
+String patronUse    = "use\\(.*";
+String patronKill   = "kill\\(.*";
 
 // ############################################### //
 // ################## Simulation ################# //
@@ -68,26 +70,15 @@ ALG SC;
 ALG MRU;
 ALG RND;
 
-
 int mmuMax;
 
 String instrucciones;
 String[] listaInstrucciones;
 int indice = -1;
 
-
-
-
-
 // ############################################### //
-// ################ Regex Patterns ############### //
+// ################### < SETUP > ################# //
 // ############################################### //
-
-String patronNew    = "new\\(.*";
-String patronDelete = "delete\\(.*";
-String patronUse    = "use\\(.*";
-String patronKill   = "kill\\(.*";
-
 
 void setup(){
   //fullScreen();
@@ -227,7 +218,6 @@ void draw(){
     
     background(#CECECE);
     fill(0);
-    menuPrincipal();
     
   } else { //Simulacion Principal
     
@@ -241,12 +231,13 @@ void draw(){
     ALG.display();
     
     
-    if (!pause){
+    if (!pause && !finish){
       
       indice++;
       String instruccion;
       if (indice >= listaInstrucciones.length){
-        instruccion = "uwu";
+        instruccion = "NOP No Operation";
+        finish = true;
       } else {
         instruccion = listaInstrucciones[indice];
       }
@@ -256,12 +247,18 @@ void draw(){
       OPT.update(instruccion);
       ALG.update(instruccion);
       
+    } else if (finish) {
+      
+      textFont(menuFont);
+      text("Simulación Finalizada :D", 5*width/12 + 180, height/16 + 15);
+      textFont(defaultFont);
+      
     }
     
     
     
-    drawMemoryFromPages(OPT.pages, 0);
-    drawMemoryFromPages(ALG.pages, 1);
+    drawMemoryFromPages(OPT);
+    drawMemoryFromPages(ALG);
     
     drawPages(OPT.pages, 0);
     drawPages(ALG.pages, 1);
@@ -307,9 +304,8 @@ void startSimulation(){
   textFont(defaultFont);
   
   pause = true;
+  finish = false;
   pausa.setLabel("Iniciar");
-  //pid general = 0
-  //pid opt = 0
    
   menuProcesos.hide();
   menuOperaciones.hide();
@@ -353,10 +349,4 @@ void startSimulation(){
   
   ALG.processes = procesos;
   ALG.time = 0;
-}
-
-
-
-void menuPrincipal(){
-  
 }

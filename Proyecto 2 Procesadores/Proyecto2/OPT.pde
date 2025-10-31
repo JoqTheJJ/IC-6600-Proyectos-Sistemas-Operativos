@@ -25,7 +25,7 @@ void traducir(String[] listaInstrucciones){
       OPT.lastPtr++;
 
     } else {
-      listaTraducida.add(0);
+      listaTraducida.add(-1);
     }
   }
   
@@ -48,7 +48,7 @@ private class OPT extends Pager{
 
   
     OPT(){
-      x = 0;
+      this.algorythm = Algorythm.OPT;
     }
     
     
@@ -59,22 +59,18 @@ private class OPT extends Pager{
     
     @Override
     protected int whoToUnload() {
-      //println("Holi estoy muerto");
       int ptr = -1;
       // indice (instriccion actual)
       int maxPos = -1;
 
-      //println("<INDICE> : "+indice);
-      //println("<listaTraducida.size()> : "+listaTraducida.size());
       for (int i = indice+1; i < listaTraducida.size(); ++i){
         int currentPagePtr = listaTraducida.get(i);
 
-        //println("holi probando..." + currentPagePtr);
-        if (super.isLoaded(currentPagePtr)){
-          //La lista no esta vacia (???)          
+        if (currentPagePtr != -1 && super.isLoaded(currentPagePtr)){
+          //El puntero no es invalido
           //La primera pagina del puntero esta cargada
+          
           int currentPos = nextPos(indice+1, listaTraducida.get(i));
-          //println("holi sigo vivo, btw: currentPos:" + currentPos);
           
           if (currentPos > maxPos){
             maxPos = currentPos;
@@ -82,7 +78,14 @@ private class OPT extends Pager{
           }
         }
       }
-      //println(ptr + " era bromita");
+      
+      if (ptr == -1){ //Si el puntero es invalido elimina a cualquiera
+        for (Page page : pages){
+          if (super.isLoaded(page.laddr)){
+            return page.laddr;
+          }
+        }
+      }
         
       return ptr;
     }
@@ -94,7 +97,7 @@ private class OPT extends Pager{
         }
       }
       
-      return 9999;
+      return -1;
     }
 
 }

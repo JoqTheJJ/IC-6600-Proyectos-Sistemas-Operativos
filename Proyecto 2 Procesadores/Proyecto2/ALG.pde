@@ -1,5 +1,10 @@
 
 
+enum Algorythm {
+  OPT, FIFO, SC, MRU, RND
+}
+
+
 
 abstract class ALG{
 
@@ -24,7 +29,7 @@ abstract class ALG{
     float thrashingPercentage;
     int fragmentation; // le cambie el nombre
 
-    int x = width/2;
+    Algorythm algorythm;
 
 
     ALG(){
@@ -124,18 +129,47 @@ abstract class ALG{
             callKill(n);
 
         } else {
-            println("Angy ¯\\_(=/)_/¯");
+            //println("Angy ¯\\_(=/)_/¯");
         }
     }
 
     void display(){
 
         int ancho = width/12;
-        int altura = 20;
+        int altura = 15;
+        String name;
+        
+        switch (algorythm) {
+          case FIFO:
+            name = "FIFO";
+            break;
+          case SC:
+            name = "Second Chance";
+            break;
+          case MRU:
+            name = "MRU";
+            break;
+          case RND:
+            name = "Random";
+            break;
+          default:
+            name = "OPT";
+            break;
+        }
 
-        int y = height/4;
+        int y = height/4 + 50;
+        int x = algorythm == Algorythm.OPT ? 0 : width/2;
 
+        textFont(menuFontBig);
+        
+        fill(179, 100, 100);
+        text(name, x+ancho , y + altura - 25);
+        //fill(240, 100, 100);
+        //text(name, x+ancho +4, y + altura - 40);
+        fill(0);
+        text(name, x+ancho +4, y + altura - 25);
 
+        textFont(defaultFont);
 
         fill(360);
         rect(x+ancho, y, ancho*2, altura);

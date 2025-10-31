@@ -7,26 +7,6 @@ void mouseWheel(MouseEvent event){
   offsetY = constrain(offsetY, -x * 15, 0);
 }
 
-void mousePressed(){
-  
-  if (mouseButton == LEFT){
-    //pruebaMUM();
-  }
-  
-  if (mouseButton == RIGHT){
-    for(int i = 0; i < listaInstrucciones.length; i++){
-       println(listaInstrucciones[i]);
-    }
-  }
-
-}
-
-void keyPressed(){
-  if (key == ' '){
-    pausa();
-  }
-  
-}
 
 
 

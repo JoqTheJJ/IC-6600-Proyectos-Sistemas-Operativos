@@ -268,6 +268,11 @@ public abstract class Pager extends ALG {
 
 
 private class FIFO extends Pager {
+  
+    FIFO(){
+      super();
+      this.algorythm = Algorythm.FIFO;
+    }
 
     @Override
     protected int whoToUnload() {
@@ -319,6 +324,12 @@ private class SC extends Pager {
         this.incrementTimes(5 * misses, true);
         updateInfo();
     }*/
+    
+    SC(){
+      super();
+      this.algorythm = Algorythm.SC;
+    }
+    
     @Override
     protected void loadPages(List<Page> pages, boolean isNew, boolean loaded) {
         for (Page page : pages) {
@@ -376,6 +387,12 @@ private class SC extends Pager {
 }
 
 private class MRU extends Pager {
+  
+    MRU(){
+      super();
+      this.algorythm = Algorythm.MRU;
+    }
+  
     @Override
     protected void incrementTimes(int seconds, boolean thrashing) {
         for  (Page p : pages) {
@@ -433,6 +450,11 @@ private class MRU extends Pager {
 }
 
 private class RND extends Pager {
+  
+    RND(){
+      super();
+      this.algorythm = Algorythm.RND;
+    }
 
     private List<Page> getLoadedPages() {
         List<Page> result = new ArrayList<>();

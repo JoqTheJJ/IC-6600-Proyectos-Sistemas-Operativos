@@ -123,14 +123,39 @@ void drawPages(List<Page> pages, int algorythm){
   
 }
 
-void drawMemoryFromPages(List<Page> list, int algorythm){
+void drawMemoryFromPages(ALG ALG){
   
-  int posY = height/8 + algorythm*height/16;
+  List<Page> list = ALG.pages;
+  String name;
+  int posY = ALG.algorythm == Algorythm.OPT ? height/8 : 3*height/16;
   int squareWidth = 10*width/12 /100; //100 RAM pages
   int posX = width/12;
   int incrementX = squareWidth;
   
   int squareHeight = 20;
+  
+  
+  switch (ALG.algorythm) {
+    case FIFO:
+      name = "FIFO";
+      break;
+    case SC:
+      name = "Second Chance";
+      break;
+    case MRU:
+      name = "MRU";
+      break;
+    case RND:
+      name = "Random";
+      break;
+    default:
+      name = "OPT";
+      break;
+  }
+  
+  fill(0);
+  text("[" + name + " Ram]", posX + 5, posY - 3);
+  
   
   stroke(0);
   fill(360);

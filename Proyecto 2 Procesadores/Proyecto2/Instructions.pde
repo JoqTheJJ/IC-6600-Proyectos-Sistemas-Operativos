@@ -1,9 +1,5 @@
 
 
-
-
-
-
 void pruebaMUM(){
   MUM mum = new MUM();
 
@@ -12,8 +8,6 @@ void pruebaMUM(){
 
   System.out.println(mum.randomInstructions(5));
 }
-
-
 
 
 
@@ -87,7 +81,7 @@ public class MUM {
     private String randomNew() {
         int pid = rand.nextInt(processes.size());
         pid = processes.get(pid);
-        int x = rand.nextInt(10);
+        int x = rand.nextInt(25);
         double y = rand.nextDouble();
         int size = rand.nextInt((int) ((x*4000) + (y*4000)));
         if (newPtr(pid)) {

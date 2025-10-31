@@ -82,8 +82,8 @@ int indice = -1;
 // ############################################### //
 
 void setup(){
-  //fullScreen();
-  size(1200, 600);
+  fullScreen();
+  //size(1200, 600);
   
   //Color mode
   colorMode(HSB, 360, 100, 100);
@@ -221,7 +221,6 @@ void draw(){
     background(#CECECE);
     fill(0);
     
-    println("AAA");
     textFont(menuFontSmall);
     fill(0);
     text("Cantidad Procesos",     width/2 - width/5, height/4 - 5);

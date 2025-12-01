@@ -2,15 +2,17 @@
 
 <item itemtype="Switch" CircId="Switch-13" mainComp="false" Show_id="false" Show_Val="false" Pos="-36,-140" rotation="0" hflip="1" vflip="1" label="Switch-13" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Norm_Close="false" DT="false" Poles="1" />
 
-<item itemtype="Potentiometer" CircId="Potentiometer-16" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-68,40" rotation="0" hflip="1" vflip="1" label="Potentiometer-16" idLabPos="-16,-40" labelrot="0" valLabPos="15,-20" valLabRot="0" Resistance="1 kΩ" Value_Ohm="340 Ω" Slider="false" Scale="1" />
+<item itemtype="Potentiometer" CircId="Potentiometer-16" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-68,40" rotation="0" hflip="1" vflip="1" label="Potentiometer-16" idLabPos="-16,-40" labelrot="0" valLabPos="15,-20" valLabRot="0" Resistance="1 kΩ" Value_Ohm="1000 Ω" Slider="false" Scale="1" />
 
-<item itemtype="Potentiometer" CircId="Potentiometer-17" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-68,-28" rotation="0" hflip="1" vflip="1" label="Potentiometer-17" idLabPos="-16,-40" labelrot="0" valLabPos="15,-20" valLabRot="0" Resistance="1 kΩ" Value_Ohm="1000 Ω" Slider="false" Scale="1" />
+<item itemtype="Potentiometer" CircId="Potentiometer-17" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-68,-28" rotation="0" hflip="1" vflip="1" label="Potentiometer-17" idLabPos="-16,-40" labelrot="0" valLabPos="15,-20" valLabRot="0" Resistance="1 kΩ" Value_Ohm="0 Ω" Slider="false" Scale="1" />
 
 <item itemtype="Subcircuit" CircId="Uno-19" mainComp="false" Show_id="true" Show_Val="false" Pos="-280,-132" rotation="0" hflip="1" vflip="1" label="Uno-19" idLabPos="0,-20" labelrot="0" valLabPos="-16,20" valLabRot="0" Logic_Symbol="false">
-<mainCompProps MainCompId="mega328-109" Frequency="16 MHz" Program="ArduinoCode.ino.hex" Auto_Load="false" saveEepr="true" MainMcu="true" SerialMon="-1" />
+<mainCompProps MainCompId="mega328-109" Frequency="16 MHz" Program="ArduinoCode.ino.hex" Auto_Load="false" saveEepr="true" MainMcu="true" SerialMon="1" />
 </item>
 
 <item itemtype="Hd44780" CircId="Hd44780-26" mainComp="false" Show_id="true" Show_Val="false" Pos="-388,-156" rotation="0" hflip="1" vflip="1" label="Hd44780-26" idLabPos="70,-82" labelrot="0" valLabPos="-16,20" valLabRot="0" Rows="2" Cols="16" />
+
+<item itemtype="SerialPort" CircId="SerialPort-27" mainComp="false" Show_id="false" Show_Val="false" Pos="-424,44" rotation="0" hflip="1" vflip="1" label="SerialPort-27" idLabPos="-20,-32" labelrot="0" valLabPos="-16,20" valLabRot="0" Auto="false" Port="COM10" Baudrate="9600 _Bd" DataBits="8 _bits" StopBits="1 _bits" SerialMon="true" />
 
 <item itemtype="Node" CircId="Node-22" mainComp="false" Pos="-128,-36" />
 
@@ -49,5 +51,9 @@
 <item itemtype="Connector" uid="Connector-31" startpinid="Hd44780-26-dataPin6" endpinid="Uno-19-3" pointList="-300,-148,-300,-92,-272,-92" />
 
 <item itemtype="Connector" uid="Connector-32" startpinid="Hd44780-26-dataPin7" endpinid="Uno-19-2" pointList="-292,-148,-292,-100,-272,-100" />
+
+<item itemtype="Connector" uid="Connector-33" startpinid="SerialPort-27-pin1" endpinid="Uno-19-1" pointList="-464,52,-484,52,-484,-108,-272,-108" />
+
+<item itemtype="Connector" uid="Connector-34" startpinid="SerialPort-27-pin0" endpinid="Uno-19-0" pointList="-464,36,-476,36,-476,-116,-272,-116" />
 
 </circuit>

@@ -3,7 +3,6 @@
 
 int pin0 = 0;
 int pin0digital = 0;
-int a = 0;
 int pin1 = 0;
 int pin1digital = 0;
 
@@ -15,12 +14,14 @@ void setup(){
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
+
+  Serial.begin(9600);
 }
 
 void loop(){
   
   //digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
+  delay(400);
   //digitalWrite(LED_BUILTIN, LOW);
   //delay(500);
 
@@ -37,4 +38,9 @@ void loop(){
   } else {
     lcd_2.print(pin1digital);
   }
+
+  Serial.print(pin0digital);
+  Serial.print(',');
+  Serial.print(pin1digital);
+  Serial.println(); 
 }

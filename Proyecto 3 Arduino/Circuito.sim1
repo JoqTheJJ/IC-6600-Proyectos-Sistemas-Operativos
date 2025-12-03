@@ -12,7 +12,7 @@
 
 <item itemtype="Hd44780" CircId="Hd44780-26" mainComp="false" Show_id="true" Show_Val="false" Pos="-388,-156" rotation="0" hflip="1" vflip="1" label="Hd44780-26" idLabPos="70,-82" labelrot="0" valLabPos="-16,20" valLabRot="0" Rows="2" Cols="16" />
 
-<item itemtype="SerialPort" CircId="SerialPort-27" mainComp="false" Show_id="false" Show_Val="false" Pos="-424,44" rotation="0" hflip="1" vflip="1" label="SerialPort-27" idLabPos="-20,-32" labelrot="0" valLabPos="-16,20" valLabRot="0" Auto="false" Port="COM10" Baudrate="9600 _Bd" DataBits="8 _bits" StopBits="1 _bits" SerialMon="true" />
+<item itemtype="SerialPort" CircId="SerialPort-27" mainComp="false" Show_id="false" Show_Val="false" Pos="-424,44" rotation="0" hflip="1" vflip="1" label="SerialPort-27" idLabPos="-20,-32" labelrot="0" valLabPos="-16,20" valLabRot="0" Auto="false" Port="COM5" Baudrate="9600 _Bd" DataBits="8 _bits" StopBits="1 _bits" SerialMon="true" />
 
 <item itemtype="Node" CircId="Node-22" mainComp="false" Pos="-128,-36" />
 

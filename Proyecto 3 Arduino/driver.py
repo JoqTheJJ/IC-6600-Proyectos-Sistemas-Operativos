@@ -5,7 +5,7 @@ import screen_brightness_control as sbc
 
 
 #Nombre puerto
-puerto = "COM11"
+puerto = "COM6"
 baud = 9600
 
 puerto_serial = serial.Serial(puerto, baud, timeout=1)

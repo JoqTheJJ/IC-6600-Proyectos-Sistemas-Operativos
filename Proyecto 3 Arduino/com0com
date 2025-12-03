@@ -1,1 +1,2 @@
-install PortName=COM10 PortName=COM11
+install PortName=COM5 PortName=COM6
+

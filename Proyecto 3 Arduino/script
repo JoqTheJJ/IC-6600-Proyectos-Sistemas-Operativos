@@ -1,1 +1,2 @@
 pip install pyserial pycaw screen-brightness-control
+pip install --no-cache-dir --user pyserial pycaw screen-brightness-control
